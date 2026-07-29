@@ -17,6 +17,10 @@ Field naming — respect the developer's suffix conventions; never invent prefix
 
 Always cite a field with its BASE TABLE. Fields live on base tables (Manage Database → Fields, e.g. `ImportStudent`), NOT on relationship-graph occurrences (e.g. `🧑‍🎓_⬇️Import🧑‍🎓Students`) — the occurrence name won't appear in the Fields table dropdown. Whenever sharing/referencing a field, state which base table it's on so it can be found.
 
+## 0b. Assume FileMaker 21+ — client AND server, always
+
+Every solution here runs FileMaker Pro 21 or newer against FileMaker Server 21 or newer. NEVER give instructions, workarounds, or "if you're on an older version…" alternatives for 20 or below, and never ask which version is in use. Use modern steps/functions freely. If a feature requires a version *above* 21, name that version — don't hedge downward.
+
 ## 1. First: confirm a recent schema at the project root
 
 Check the project root for a schema snapshot (DDR export / schema dump). None → ask for one before building anything. More than 4 weeks old → flag as possibly stale and ask whether to proceed. Why: without it you're guessing at names and produce snippets referencing objects that don't exist.

@@ -32,6 +32,7 @@ fi
 if [ "$matched" -eq 1 ]; then
   cat <<'EOF'
 [filemaker-rules] This session involves FileMaker. Before producing ANY FileMaker deliverable, invoke the `filemaker-conventions` skill and follow every rule in it. Non-negotiables even before the skill loads:
+- Assume FileMaker 21+ on BOTH client and server. Never give steps, workarounds, or caveats for older versions.
 - Refer to every object by its EXACT full name, emojis included — never an internal id, never truncated.
 - Deliver script steps as paste-ready clipboard XML wrapped in the full <fmxmlsnippet type="FMObjectList"> envelope. Never bracketed pseudo-syntax like Set Field [ ... ].
 - Put an empty `# (comment)` step (id 89, no Text) above each section-heading comment — blank XML lines render no gap.
