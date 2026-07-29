@@ -16,19 +16,19 @@ The hook counts a turn as FileMaker work when **any** of these is true:
 Run these two commands in a terminal (works from anywhere):
 
 ```bash
-claude plugin marketplace add YOUR-GH-USER/filemaker-claude
+claude plugin marketplace add jasonnmark/FilemakerRulesForClaude
 ```
 
 ```bash
 claude plugin install filemaker-rules@jason-filemaker
 ```
 
-> Replace `YOUR-GH-USER/filemaker-claude` with wherever this repo is pushed. The second command never changes — `jason-filemaker` is the marketplace name defined in `.claude-plugin/marketplace.json`, not the repo name.
+> `jason-filemaker` in the second command is the marketplace name defined in `.claude-plugin/marketplace.json`, not the repo name — it never changes.
 
 If the first command clones over SSH and that isn't set up, prefer HTTPS:
 
 ```bash
-CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1 claude plugin marketplace add YOUR-GH-USER/filemaker-claude
+CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1 claude plugin marketplace add jasonnmark/FilemakerRulesForClaude
 ```
 
 Restart Claude Code (or run `/reload-plugins`) and it's live. Test it: start a session and type a prompt containing "FileMaker" — the rules should take effect.
@@ -72,7 +72,7 @@ To keep your own machine on the same source of truth, install the plugin on your
 ### Layout
 
 ```
-filemaker-claude/                              ← repo root = the marketplace
+FilemakerRulesForClaude/                       ← repo root = the marketplace
 ├── .claude-plugin/
 │   └── marketplace.json                       ← catalog (marketplace name: jason-filemaker)
 ├── filemaker-rules-plugin/                    ← the plugin
