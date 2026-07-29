@@ -1,0 +1,10 @@
+{
+  "name": "filemaker-rules",
+  "displayName": "FileMaker Rules",
+  "description": "FileMaker development conventions: exact-name references, paste-ready clipboard XML, and delivery rules. Ships a skill plus a hook that auto-loads it on FileMaker work.",
+  "author": {
+    "name": "Jason"
+  },
+  "keywords": ["filemaker", "fmp12", "clipboard-xml", "conventions"],
+  "license": "MIT"
+}

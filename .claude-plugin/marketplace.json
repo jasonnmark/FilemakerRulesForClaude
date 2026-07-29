@@ -1,0 +1,13 @@
+{
+  "name": "jason-filemaker",
+  "owner": {
+    "name": "Jason"
+  },
+  "plugins": [
+    {
+      "name": "filemaker-rules",
+      "source": "./filemaker-rules-plugin",
+      "description": "FileMaker development conventions and clipboard-XML delivery rules. Auto-fires on FileMaker work via a UserPromptSubmit hook."
+    }
+  ]
+}
