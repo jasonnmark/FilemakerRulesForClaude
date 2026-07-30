@@ -1,6 +1,6 @@
 ---
 name: filemaker-conventions
-description: FileMaker development conventions and delivery format. Use whenever the task involves FileMaker or FileMaker Pro — building or editing scripts and script steps, producing clipboard XML snippets (fmxmlsnippet), calculations, layouts, value lists, custom functions, portals, or ExecuteSQL against a .fmp12 solution.
+description: FileMaker development conventions and delivery format. Use whenever the task involves FileMaker or FileMaker Pro — building or editing scripts and script steps, producing clipboard XML snippets (fmxmlsnippet), calculations, layouts, value lists, custom functions, portals, ExecuteSQL against a .fmp12 solution, or installing/licensing plugins (BaseElements, MBS) on FileMaker Server.
 ---
 
 # FileMaker Rules (ALL FileMaker projects)
@@ -144,3 +144,38 @@ Same in `FROM`/`WHERE`. String literals keep single quotes (`WHERE Type <> 'Plat
 Fact: a stored request in `Perform Find [Restore]` CAN contain a variable (e.g. `$Cycle`) — it evaluates at runtime. Never reason from "a stored find can't use a variable."
 
 Preference: never deliver a find as a single stored-request `Perform Find [Restore]`. Spell it out: `Enter Find Mode` (no pause, no stored criteria) → one `Set Field` per criterion, `New Record/Request` for additional requests, `Omit Record` for omits → `Perform Find` with no stored requests. Ids for these find steps aren't in the verified table yet — per rule 5, copy from real pasted XML or flag.
+
+## 11. Clipboard XML in/out of Script Workspace — type codes required
+
+FileMaker never reads plain text from the clipboard for schema objects; the entry must carry a 4-char type code: `XMSS` script steps, `XMSC` whole script, `XMTB` table, `XMFD` field, `XMFN` custom function, `XML2` layout objects. Plugins don't hook Cmd-V — write the tagged clipboard explicitly.
+
+- Paste IN: evaluate `BE_ClipboardSetText ( $xml ; "XMSS" )` in the Data Viewer, then Cmd-V into the step list.
+- Copy OUT: copy steps in Script Workspace, then `BE_ClipboardGetText ( "XMSS" )`. Empty → evaluate `BE_ClipboardFormats` and use the exact string it reports.
+- The Data Viewer truncates long results — a big script looks cut off even when the copy worked. Write to disk with `BE_FileWriteText` before judging.
+- Long XML in a calc: park it in a global field rather than inline-escaping every `\"`.
+
+## 12. Plugins on FileMaker Server (macOS) — install AND enable
+
+Install (server stopped) — copy the `.fmplugin` into all three, then per copy `xattr -dr com.apple.quarantine` and `chown -R fmserver:fmsadmin`, then start:
+
+```
+/Library/FileMaker Server/Database Server/Extensions
+/Library/FileMaker Server/Web Publishing/publishing-engine/cwpc/Plugins
+/Library/FileMaker Server/Web Publishing/publishing-engine/wip/Plugins
+```
+
+Enable at Admin Console → **Connectors → Plug-ins**: "FileMaker Script Engine Plug-ins" (schedules/PSoS) and "Web Publishing Plug-ins" (WebDirect/Data API). NEVER send anyone to Configuration → Script Settings — that's pre-21 and it isn't there. (Real violation. Don't repeat.) The Connectors → Plug-ins tab lists detected plug-ins — fastest confirmation the server sees the file.
+
+Pasted shell blocks for the server: omit the `#!/bin/bash` shebang — zsh history expansion errors on `!` (`event not found`). Quoted paths need no backslash escaping.
+
+## 13. Server-side plugin diagnostics — in order, via PSoS
+
+Diagnose with a script run through Perform Script on Server, never a local run.
+
+- `Get ( ApplicationVersion )` on FMS returns e.g. `Server 21.0.1` — `= "Server"` is ALWAYS false. Use `PatternCount ( Get ( ApplicationVersion ) ; "Server" )`. (Real violation. Don't repeat.)
+- `Get ( InstalledFMPlugins )` is the definitive presence check — it works even when the plugin failed to load. Guard every `MBS()`/`BE_` call behind it so a missing plugin doesn't turn the whole result into `?`.
+- Ladder when a function returns `?`: (1) ran on server? (2) `Get ( InstalledFMPlugins )` lists it? (3) enabled at Connectors → Plug-ins? (4) `lipo -archs` shows `arm64` on Apple Silicon? (5) quarantine flag stripped? (6) `StdErrServerScripting.log` / `StdErrDataAPI.log` / `StdErrWeb.log` exist in Logs? Absent = server never attempted the load. Only after all six is it licensing.
+
+## 14. MBS licensing — once, persisted
+
+`MBS ( "StoreRegistration" ; Name ; Component ; Type ; ExpireMonth ; Serial )` writes the license into server prefs permanently; pair with `MBS ( "Register" ; … )` so the current session licenses immediately; `MBS ( "IsRegistered" )` = 1 confirms. All five values verbatim from the purchase email — component, type string, and `YYYYMM` expiry included — or it fails silently. Run once via PSoS from a throwaway hosted file, then remove the file. Never paste a live serial into chat/tickets without flagging it for rotation.
