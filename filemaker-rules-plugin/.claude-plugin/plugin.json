@@ -1,7 +1,7 @@
 {
   "name": "filemaker-rules",
   "displayName": "FileMaker Rules",
-  "description": "FileMaker development conventions: exact-name references, paste-ready clipboard XML, and delivery rules. Ships a skill plus a hook that auto-loads it on FileMaker work.",
+  "description": "FileMaker development conventions: exact-name references, paste-ready clipboard XML, and delivery rules. Ships a conventions skill (auto-loaded via a hook on FileMaker work) plus a filemaker-update skill that pulls the latest schema and refreshes the rules, with a throttled every-few-days auto-nudge.",
   "author": {
     "name": "Jason"
   },
