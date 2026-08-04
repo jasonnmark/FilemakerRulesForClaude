@@ -141,6 +141,13 @@ The trap is documenting a token: a web-viewer template placeholder written the d
 
 Brackets in *live code* are fine — `Let ( [ … ] ; … )`, `Substitute ( x ; [ a ; b ] )`, and tokens inside string literals all parse. Prefer nested 3-parameter `Substitute` over the bracket-pair form anyway; it removes the last ambiguity for free. (Real violation, 2026-08-04, cost several round trips — Jason spotted it, not me.)
 
+## 7c. Web viewers that WRITE back (`FileMaker.PerformScript`) — two crash traps
+
+Confirmed on FM Pro 26.0.1 (beachball, 2026-08-04):
+
+- **The called script must start with `Freeze Window` (id 79)** whenever it writes fields the viewer's address calc depends on. Without it, EVERY Set Field re-evaluates the address and reloads WebKit — a 10-rep write = ~11 reloads per save; navigating records mid-storm hangs the client.
+- **Never fire `PerformScript` from a `blur` handler as the only save path.** Switching records blurs the field and the call lands while FileMaker is tearing the viewer down (WebKit calls into the script engine while FM waits on WebKit → deadlock). Pattern: debounced autosave on `input` (~1s) so blur is normally clean, plus an `UNLOADING` flag set on `pagehide`/`beforeunload` that vetoes every `PerformScript`; a blur-time save defers one tick (`setTimeout 0`) so the flag can catch it.
+
 ## 8. Never add `Commit Records/Requests` to "fix" a save
 
 FileMaker auto-saves field writes, including in server-side scripts — a commit is never the fix for "the field came up blank." Diagnose instead: stale layout display (write actually succeeded), record lock, `GetFieldName()` returning empty, wrong/duplicate field reference, `Set Error Capture` hiding the error, wrong record or related table. (Commits were once wrongly added to import scripts, then reverted. Don't repeat.)
