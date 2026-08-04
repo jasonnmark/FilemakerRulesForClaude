@@ -146,6 +146,7 @@ Brackets in *live code* are fine — `Let ( [ … ] ; … )`, `Substitute ( x ; 
 Confirmed on FM Pro 26.0.1 (beachball, 2026-08-04):
 
 - **The called script must start with `Freeze Window` (id 79)** whenever it writes fields the viewer's address calc depends on. Without it, EVERY Set Field re-evaluates the address and reloads WebKit — a 10-rep write = ~11 reloads per save; navigating records mid-storm hangs the client.
+- **Never put an ExecuteSQL JOIN in a layout-object calc.** Client-side JOINs pull every affected record to the client and go quadratic — the calc re-runs on each record switch and beachballs on data-heavy records (confirmed: Transcript⋈TranscriptAdditional in a web viewer address, FM 26.0.1). Use flat single-table indexed queries and join the rows in the page's JS. Also avoid `beforeunload` listeners in web viewer pages — they can block embedded-WebKit teardown; use `pagehide`.
 - **Never fire `PerformScript` from a `blur` handler as the only save path.** Switching records blurs the field and the call lands while FileMaker is tearing the viewer down (WebKit calls into the script engine while FM waits on WebKit → deadlock). Pattern: debounced autosave on `input` (~1s) so blur is normally clean, plus an `UNLOADING` flag set on `pagehide`/`beforeunload` that vetoes every `PerformScript`; a blur-time save defers one tick (`setTimeout 0`) so the flag can catch it.
 
 ## 8. Never add `Commit Records/Requests` to "fix" a save
