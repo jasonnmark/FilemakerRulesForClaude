@@ -126,6 +126,21 @@ Web Address calc: `"data:text/html;charset=utf-8," & <html>`.
 - Don't use `Base64Encode`/`Base64EncodeRFC` on text for a `;base64,` URL — they return empty for text → blank viewer.
 - The address calc evaluates in the layout's context; a field with no reachable related record returns empty and the calc collapses to the 29-char prefix → blank. Read utility-table fields with `ExecuteSQL`. Diagnose with `"LEN: " & Length ( <calc> )` as the address: 29 = empty refs.
 
+## 7b. NEVER put a square bracket inside a calculation comment
+
+`[` or `]` anywhere in a `/* */` block or a `//` line makes FileMaker throw **"List usage not allowed."** The parser counts bracket characters before it strips comments. Applies to EVERY calc, not just web viewers — and it is invisible, because the code is fine and the dialog points nowhere useful.
+
+The trap is documenting a token: a web-viewer template placeholder written the doubled-bracket way, or explaining `Substitute`'s or `JSONSetElement`'s `[ old ; new ]` pair form. Scan every comment for `[` before delivering a calc.
+
+```
+❌ BAD:   /* substitutes the [[CATALOG]] and [[DATA]] tokens */
+❌ BAD:   /* not the [ key ; value ; type ] multi-parameter form */
+✅ GOOD:  /* substitutes the CATALOG and DATA tokens */
+✅ GOOD:  /* not the multi-parameter pair form */
+```
+
+Brackets in *live code* are fine — `Let ( [ … ] ; … )`, `Substitute ( x ; [ a ; b ] )`, and tokens inside string literals all parse. Prefer nested 3-parameter `Substitute` over the bracket-pair form anyway; it removes the last ambiguity for free. (Real violation, 2026-08-04, cost several round trips — Jason spotted it, not me.)
+
 ## 8. Never add `Commit Records/Requests` to "fix" a save
 
 FileMaker auto-saves field writes, including in server-side scripts — a commit is never the fix for "the field came up blank." Diagnose instead: stale layout display (write actually succeeded), record lock, `GetFieldName()` returning empty, wrong/duplicate field reference, `Set Error Capture` hiding the error, wrong record or related table. (Commits were once wrongly added to import scripts, then reverted. Don't repeat.)
