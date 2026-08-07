@@ -17,6 +17,10 @@ Field naming — respect the developer's suffix conventions; never invent prefix
 
 Always cite a field with its BASE TABLE. Fields live on base tables (Manage Database → Fields, e.g. `ImportStudent`), NOT on relationship-graph occurrences (e.g. `🧑‍🎓_⬇️Import🧑‍🎓Students`) — the occurrence name won't appear in the Fields table dropdown. Whenever sharing/referencing a field, state which base table it's on so it can be found.
 
+## 0a. Every script instruction carries a LINE NUMBER — no exceptions
+
+Any time the developer must click, edit, delete, paste at, or inspect a step in a script, cite the Script Workspace line number: "double-click line 26 (`Import Records`)", never just "open the Import Records step". Applies to one-off asks in chat, not just delivery docs. DDR step numbering = workspace numbering (comments count); flag which export the numbers come from. Multiple edits in one script: list highest line first so earlier edits don't shift later anchors. (Repeated violation — called out four times on 2026-08-07. Don't repeat.)
+
 ## 0b. Assume FileMaker 21+ — client AND server, always
 
 Every solution here runs FileMaker Pro 21 or newer against FileMaker Server 21 or newer. NEVER give instructions, workarounds, or "if you're on an older version…" alternatives for 20 or below, and never ask which version is in use. Use modern steps/functions freely. If a feature requires a version *above* 21, name that version — don't hedge downward.
