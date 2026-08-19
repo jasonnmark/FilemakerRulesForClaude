@@ -85,6 +85,20 @@ FileMaker IGNORES blank lines in pasted XML — a literal empty line renders NO 
 
 (Keep the blank XML line too for source readability, but the empty comment STEP is what renders in the editor.)
 
+## 4b. Comment steps: section dividers YES, essays NO — 10 words each
+
+Section-divider comments between groups of steps are wanted — they make a long script scannable. What is NOT wanted is a long block inside any one of them.
+
+- **Cap every `# (comment)` step at ~10 words.** No rationale paragraphs, no "why this idiom", no restating values the Set Fields below already show, no install prerequisites, no cross-references to other scripts.
+- **Throwaway / run-once scripts get exactly ONE comment**: what it is and what replaces it. Nothing else.
+- Explanation belongs in the deliverable's README, or in runtime text (`$$Result`, an abort message) — never in the step list.
+
+❌ `<Text>Anchors on LearnersImported_Utility and walks every student, creating the related record where none exists — the house idiom (same as …). Sets only the REQUIRED fields to district defaults: 120 total · ELA 20 · …</Text>`
+✅ `<Text>=== SEED TARGETS ===</Text>`
+✅ `<Text>Temporary — student import will seed these going forward.</Text>`
+
+(Real violation 2026-08-13: a run-once seeder shipped with five paragraph-length preambles. "I'm never going to read them.")
+
 ## 5. Reuse real serialization — don't guess
 
 Copy exact step serialization from XML that is already known-good (previously pasted): step `id`, `<Calculation>`/`<Field>`/`<Layout>`/`<Script>` forms, real internal ids. Flag any uncertain step instead of guessing silently.
