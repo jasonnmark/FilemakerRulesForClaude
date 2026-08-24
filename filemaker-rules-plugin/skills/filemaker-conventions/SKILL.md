@@ -56,6 +56,21 @@ Never bracketed pseudo-syntax like `Set Field [ Table::field ; <calc> ]` — it 
 
 Anything over ~20 lines: hand back the complete updated calc/script in one paste, never "replace this block" fragments — a mis-spliced manual edit breaks the calc; re-pasting the whole thing is free. Explaining what changed in prose alongside is fine. Under ~20 lines, standalone fragments are fine.
 
+## 2c. Editing ONE existing step's calculation → bare calc text only
+
+Changing the calc inside a step that already exists is NOT "delivering a step."
+Give exactly what gets pasted into that calculation box: no XML, no wrapper.
+
+- ❌ Clipboard XML for the whole step — forces a step-delete-and-paste for a one-field edit.
+- ❌ `If ( DayOfWeek ( Get(CurrentDate) ) = 2 )` for an `If` step's condition — the `If ( )` is the STEP, not the calc. The box holds only the boolean.
+- ✅ `DayOfWeek ( Get(CurrentDate) ) = 2 or DayOfWeek ( Get(CurrentDate) ) = 4`
+
+Same for `Exit Loop If`, `Show Custom Dialog` message, portal filters, hide conditions, `Set Field` targets: hand over the expression that lives in the box, nothing around it.
+
+Say which step (name + number) in prose, then the bare calc in its own code block.
+
+(Repeated violation — cost round trips 2026-08-24 on `🌘📅🌐Morning8AM` step 5. Reach for XML only when a step is being ADDED, REPLACED wholesale, or REORDERED.)
+
 ## 3. Clipboard XML envelope — required every time
 
 ```
