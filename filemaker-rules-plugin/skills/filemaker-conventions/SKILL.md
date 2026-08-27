@@ -207,6 +207,21 @@ FileMaker auto-saves field writes, including in server-side scripts — a commit
 
 Same in `FROM`/`WHERE`. String literals keep single quotes (`WHERE Type <> 'Plato'` is fine — the rule is identifiers, not values). If a name isn't SQL-safe unquoted (reserved word like `Type`, `Date`, `Time`, `Timestamp`, `Value`, `Status`, `Row`, `Group`, `Order`, `User`; spaces/special chars; leading non-letter): don't paper over with `\"` quotes — stop, name it, and have the field renamed, then write it plain.
 
+## 9b. SQL dates ≠ FileMaker dates — convert BOTH directions
+
+ExecuteSQL returns dates as `YYYY-MM-DD` text, not a FileMaker date. Never feed a raw SQL result into a date field, `Date` calc, or date math — wrap it. Two custom functions exist; use them, don't hand-roll parsing.
+
+- SQL → FileMaker: `SQL_DateTime_to_Date ( <sql result> )`
+- FileMaker → SQL: `Date_FM_to_SQL ( <date> )` — returns `YYYY-MM-DD`
+
+✅ `SQL_DateTime_to_Date ( ExecuteSQL ( "SELECT StartOfYear FROM Settings" ; "" ; "" ) )`
+
+Bound `?` parameters coerce a FileMaker date fine. A date concatenated into the query string does not — run it through `Date_FM_to_SQL` first.
+
+## 9c. SQL `FROM` takes the TABLE OCCURRENCE name, not the base table
+
+The TO name from the relationship graph often differs from the base table in the DDR export — base `a_Settings` is queried as `FROM Settings`. Rule 0's base-table rule governs telling the user where to FIND a field; SQL is the exception. `SQLGetTableName ( field )` returns the correct TO name when unsure. (Real violation 2026-08-27: shipped `FROM a_Settings`; failed.)
+
 ## 10. Finds: stored requests CAN hold variables; build finds step-by-step
 
 Fact: a stored request in `Perform Find [Restore]` CAN contain a variable (e.g. `$Cycle`) — it evaluates at runtime. Never reason from "a stored find can't use a variable."
