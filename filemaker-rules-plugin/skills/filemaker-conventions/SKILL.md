@@ -126,6 +126,14 @@ Section-divider comments between groups of steps are wanted — they make a long
 
 (Real violation 2026-08-13: a run-once seeder shipped with five paragraph-length preambles. "I'm never going to read them.")
 
+## 4c. Calc comments: 10-word cap, never explain code
+
+Applies to EVERY deliverable calculation — web viewer address calcs included. No header blocks, no "LIVES IN" banners, no rule restatements, no explaining what the next line does. At most one ≤10-word line for a fact the code cannot show. (Real violation 2026-08-28: an address calc shipped with a ~15-line comment stack; the user deletes these by hand every time.)
+
+## 4d. No table-wide SQL in layout-object calcs
+
+A web viewer address / conditional / hide calc re-evaluates constantly, client-side. Any ExecuteSQL in one must hit an indexed column with a selective WHERE (per-student, per-course). NEVER a GROUP BY, aggregate, or unfiltered scan over a large table (ClassList, MicroCredits, Transcript) — it downloads the whole table over WAN and beachballs or hangs the client (confirmed 2026-08-28: enrollment GROUP BY over ClassList in an address calc froze FileMaker, force-quit required). Read nightly-cached fields instead; that is what they exist for.
+
 ## 5. Reuse real serialization — don't guess
 
 Copy exact step serialization from XML that is already known-good (previously pasted): step `id`, `<Calculation>`/`<Field>`/`<Layout>`/`<Script>` forms, real internal ids. Flag any uncertain step instead of guessing silently.
