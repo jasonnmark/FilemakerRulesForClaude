@@ -71,6 +71,18 @@ Say which step (name + number) in prose, then the bare calc in its own code bloc
 
 (Repeated violation — cost round trips 2026-08-24 on `🌘📅🌐Morning8AM` step 5. Reach for XML only when a step is being ADDED, REPLACED wholesale, or REORDERED.)
 
+## 2d. Whole-script deliveries: ship them CLEAN
+
+When handing back a complete script (rule 2b):
+
+- **Drop disabled steps and the comments that describe them** — a rewrite is the moment dead code dies. Keep a disabled step only if the user says to.
+- Keep/add ~10-word section dividers (rule 4b) so long scripts scan.
+- A script pushing past ~150 live steps: propose splitting into subscripts in one line — don't just deliver the monolith silently.
+
+## 2e. The copyable block holds ONLY the code
+
+Whatever is being copied — calc text, XML, SQL — the code block or delivered file contains nothing but the paste itself. No header notes, no "replaces the calc of…", no deploy caveats inside the block. All explanation lives in chat prose around it. (Real violation 2026-08-27: calc .txt files shipped with 3-line preambles the user had to strip before pasting.)
+
 ## 3. Clipboard XML envelope — required every time
 
 ```
