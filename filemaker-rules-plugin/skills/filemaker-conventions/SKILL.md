@@ -134,6 +134,10 @@ Applies to EVERY deliverable calculation — web viewer address calcs included. 
 
 A web viewer address / conditional / hide calc re-evaluates constantly, client-side. Any ExecuteSQL in one must hit an indexed column with a selective WHERE (per-student, per-course). NEVER a GROUP BY, aggregate, or unfiltered scan over a large table (ClassList, MicroCredits, Transcript) — it downloads the whole table over WAN and beachballs or hangs the client (confirmed 2026-08-28: enrollment GROUP BY over ClassList in an address calc froze FileMaker, force-quit required). Read nightly-cached fields instead; that is what they exist for.
 
+## 4e. Scripts must not depend on layout names that can drift
+
+`Go to Layout` steps in pasted XML resolve by NAME; a duplicate or renamed layout silently hijacks the paste (confirmed 2026-08-28: RemoveCourse's guard read blank keys — its "CourseList" step grabbed a new web-viewer layout sharing the name). Prefer context-free ExecuteSQL guards; when a real layout context is required (delete, Set Field), name the exact intended layout in the delivery and tell the user to verify the step after pasting — especially when a layout is slated for deletion.
+
 ## 5. Reuse real serialization — don't guess
 
 Copy exact step serialization from XML that is already known-good (previously pasted): step `id`, `<Calculation>`/`<Field>`/`<Layout>`/`<Script>` forms, real internal ids. Flag any uncertain step instead of guessing silently.
