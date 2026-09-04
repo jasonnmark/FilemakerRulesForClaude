@@ -223,6 +223,17 @@ FileMaker auto-saves field writes, including in server-side scripts — a commit
 
 Same in `FROM`/`WHERE`. String literals keep single quotes (`WHERE Type <> 'Plato'` is fine — the rule is identifiers, not values). If a name isn't SQL-safe unquoted (reserved word like `Type`, `Date`, `Time`, `Timestamp`, `Value`, `Status`, `Row`, `Group`, `Order`, `User`; spaces/special chars; leading non-letter): don't paper over with `\"` quotes — stop, name it, and have the field renamed, then write it plain.
 
+## 9a. NEVER put curly quotes `“ ”` inside a calculation
+
+FileMaker treats `“`/`”` as string delimiters on paste: the calc either fails to parse (FM wraps it in `/* */`, silently disabling the step) or re-serializes with `\"` escapes that turn the whole expression into one literal string. Use `'` for quoted values in messages.
+
+```
+❌ BAD:   "a course named “" & $title & "” exists"
+✅ GOOD:  "a course named '" & $title & "' exists"
+```
+
+Check before shipping: `grep -c '[“”]' *.xml` must be 0. (2026-09-04: ProficiencyConversion_CreateCourse pasted with both duplicate refusals commented out.)
+
 ## 9b. SQL dates ≠ FileMaker dates — convert BOTH directions
 
 ExecuteSQL returns dates as `YYYY-MM-DD` text, not a FileMaker date. Never feed a raw SQL result into a date field, `Date` calc, or date math — wrap it. Two custom functions exist; use them, don't hand-roll parsing.
