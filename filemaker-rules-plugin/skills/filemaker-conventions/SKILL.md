@@ -43,6 +43,10 @@ Every script XML, calc `.txt`, audit `.md`, or HTML mockup you hand over is a ke
 - Name the `.xml` with the script's EXACT FileMaker name (rule 0), e.g. `DataPull 🟥🟨🟩_CurrentWeekAdditions.xml`. Reuse an existing feature folder if one fits; only create a new one when none does.
 - Still fine to draft in scratchpad, but the final artifact lands in the project folder before you report it done.
 
+## 1d. Re-paste lists come from the changed-file set, not memory
+
+After any multi-file revision, diff/enumerate which delivered files actually changed and list EVERY one for re-paste. (Violation 2026-09-03: a GetData script changed in a rev but was left off the paste list — page and data feed desynced, columns shifted.)
+
 ## 2. Deliverables are paste-ready — never pseudo-syntax
 
 Exactly two forms:
