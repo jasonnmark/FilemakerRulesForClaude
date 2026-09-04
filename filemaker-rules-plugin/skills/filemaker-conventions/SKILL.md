@@ -9,7 +9,7 @@ description: FileMaker development conventions and delivery format. Use whenever
 
 ## 0. Refer to everything by NAME, never internal id
 
-The developer works by script/field/layout/table name; internal ids are meaningless to them. An id may appear only as a quiet parenthetical. (Inside clipboard XML, `id=` attributes still belong — that's for the paste.)
+The developer works by script/field/layout/table name; internal ids are meaningless to them. An id may appear only as a quiet parenthetical. (Inside clipboard XML, `id=` attributes still belong — that's for the paste.) Never shorten a script name in prose or link text — `ProficiencyConversion_AssignConvert`, not "AssignConvert" (violated 2026-09-03).
 
 Use the FULL exact name — never truncate, abbreviate, or strip emojis; they are part of the name and the developer searches by it. (Real violation: truncated `🌘📅NIGHTLY_REPORT_CompetencyByCycles_Cache🟥🟨🟩`. Don't repeat.)
 
