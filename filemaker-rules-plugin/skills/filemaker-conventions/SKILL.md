@@ -187,6 +187,10 @@ Web Address calc: `"data:text/html;charset=utf-8," & <html>`.
 - Don't use `Base64Encode`/`Base64EncodeRFC` on text for a `;base64,` URL — they return empty for text → blank viewer.
 - The address calc evaluates in the layout's context; a field with no reachable related record returns empty and the calc collapses to the 29-char prefix → blank. Read utility-table fields with `ExecuteSQL`. Diagnose with `"LEN: " & Length ( <calc> )` as the address: 29 = empty refs.
 
+## 7a. Web-viewer templates ship as `.txt` for copying
+
+The Claude app renders any `.html` in its side panel — Jason can't select the source. Deliver a template he must paste into a Settings field as `Name.html.txt` (attached via SendUserFile); keep the `.html` on disk for previews. (2026-09-11: "the text works great, learn that.")
+
 ## 7b. NEVER put a square bracket inside a calculation comment
 
 `[` or `]` anywhere in a `/* */` block or a `//` line makes FileMaker throw **"List usage not allowed."** The parser counts bracket characters before it strips comments. Applies to EVERY calc, not just web viewers — and it is invisible, because the code is fine and the dialog points nowhere useful.
