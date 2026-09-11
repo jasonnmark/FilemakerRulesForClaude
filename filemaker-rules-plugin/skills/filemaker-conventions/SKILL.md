@@ -179,6 +179,18 @@ Probe/debug/diagnostic scripts: add `Set Variable [ $$Result ]` immediately befo
 </Step>
 ```
 
+## 6b. Data Viewer diagnostics = ONE calc, labeled, copy-back-able
+
+When asking Jason to check values, give a single `List ( "label: " & expr ; … )` calc he pastes once and copies the result back. Never a numbered list of separate expressions. (2026-09-11: "give me ONE chunk of code".)
+
+```
+List (
+  "dupes: " & Count ( TO_Dupecheck::PrimaryKey ) ;
+  "live: " & Table::Field_c ;
+  "cycle: " & $$CurrentCycle & " | " & Table::CycleViewing_g
+)
+```
+
 ## 7. Web viewer: render HTML via a `data:` URL
 
 Web Address calc: `"data:text/html;charset=utf-8," & <html>`.
