@@ -207,6 +207,10 @@ Web Address calc: `"data:text/html;charset=utf-8," & <html>`.
 
 The Claude app renders any `.html` in its side panel — Jason can't select the source. Deliver a template he must paste into a Settings field as `Name.html.txt` (attached via SendUserFile); keep the `.html` on disk for previews. (2026-09-11: "the text works great, learn that.")
 
+## 7a2. Web-viewer CSS: `[hidden]{display:none!important}` in every template
+
+Any element with its own `display:flex/grid/block` rule ignores the HTML `hidden` attribute, so a panel meant to be closed renders open. Put the rule near the top of the stylesheet. (Bit twice: CreditConversion create panel 2026-09-04, CourseScreen Advanced menu 2026-09-15.)
+
 ## 7b. NEVER put a square bracket inside a calculation comment
 
 `[` or `]` anywhere in a `/* */` block or a `//` line makes FileMaker throw **"List usage not allowed."** The parser counts bracket characters before it strips comments. Applies to EVERY calc, not just web viewers — and it is invisible, because the code is fine and the dialog points nowhere useful.
