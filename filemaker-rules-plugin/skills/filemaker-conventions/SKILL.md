@@ -47,6 +47,15 @@ Every script XML, calc `.txt`, audit `.md`, or HTML mockup you hand over is a ke
 
 After any multi-file revision, diff/enumerate which delivered files actually changed and list EVERY one for re-paste. (Violation 2026-09-03: a GetData script changed in a rev but was left off the paste list — page and data feed desynced, columns shifted.)
 
+## 1e. Every deliverable = ONE numbered step with the link INLINE — never a file card up top
+
+The reply to any FileMaker delivery is a numbered list where each step says where to go in FileMaker, what to do, and carries the markdown link to the file inside that step. Files are never "attached above" and then referred to. Every file gets its own step. Format that worked (2026-09-15):
+
+1. Script Workspace → open `CourseScreen_Advanced` → select all steps, delete, paste [CourseScreen_Advanced.xml](/abs/path/CourseScreen_Advanced.xml). One line on what it changes.
+2. Open [CourseScreen_FMP_template.html.txt](/abs/path/…) → Select All → Copy → paste into `Settings::CourseScreen_HTML` → leave and re-enter the layout.
+
+SendUserFile is still called (so the .txt lands in the panel) but the reply must not depend on the card. (Repeated violation across projects; Jason 2026-09-15: "That's how I always want it… you've tried to learn this before and failed.")
+
 ## 2. Deliverables are paste-ready — never pseudo-syntax
 
 Exactly two forms:
