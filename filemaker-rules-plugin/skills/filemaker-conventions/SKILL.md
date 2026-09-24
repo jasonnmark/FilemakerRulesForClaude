@@ -7,6 +7,8 @@ description: FileMaker development conventions and delivery format. Use whenever
 
 > Single source of truth for FileMaker work. This skill loads automatically when a session involves FileMaker (a UserPromptSubmit hook detects it). Follow every rule below before delivering anything.
 
+**Two companion docs in this folder — read the one that applies before starting:** `HTML_WebViewer_Playbook.md` for any HTML/JavaScript web-viewer screen, `SQL_Playbook.md` before any `ExecuteSQL`.
+
 ## 0. Refer to everything by NAME, never internal id
 
 The developer works by script/field/layout/table name; internal ids are meaningless to them. An id may appear only as a quiet parenthetical. (Inside clipboard XML, `id=` attributes still belong — that's for the paste.) Never shorten a script name in prose or link text — `ProficiencyConversion_AssignConvert`, not "AssignConvert" (violated 2026-09-03).
@@ -147,7 +149,7 @@ Applies to EVERY deliverable calculation — web viewer address calcs included. 
 
 First line of the file: a comment with `TEMPLATE_VERSION: vX.Y`. No revision history anywhere in the file — the repo holds it. Every other comment ≤10 words including its heading. (2026-09-15: CourseScreen shipped with a "fuckton" of rev comments.)
 
-## 4d. No table-wide SQL in layout-object calcs
+## 4d. No table-wide SQL in layout-object calcs (details: `SQL_Playbook.md`)
 
 A web viewer address / conditional / hide calc re-evaluates constantly, client-side. Any ExecuteSQL in one must hit an indexed column with a selective WHERE (per-student, per-course). NEVER a GROUP BY, aggregate, or unfiltered scan over a large table (ClassList, MicroCredits, Transcript) — it downloads the whole table over WAN and beachballs or hangs the client (confirmed 2026-08-28: enrollment GROUP BY over ClassList in an address calc froze FileMaker, force-quit required). Read nightly-cached fields instead; that is what they exist for.
 
@@ -247,14 +249,14 @@ Confirmed on FM Pro 26.0.1 (beachball, 2026-08-04):
 
 FileMaker auto-saves field writes, including in server-side scripts — a commit is never the fix for "the field came up blank." Diagnose instead: stale layout display (write actually succeeded), record lock, `GetFieldName()` returning empty, wrong/duplicate field reference, `Set Error Capture` hiding the error, wrong record or related table. (Commits were once wrongly added to import scripts, then reverted. Don't repeat.)
 
-## 9. ExecuteSQL: identifiers PLAIN — no escaped `\"` quotes
+## 9. ExecuteSQL — read `SQL_Playbook.md` first
 
-```
-❌ BAD:   SUM ( \"MicroCredits\".\"CreditsMastery\" )
-✅ GOOD:  SUM ( MicroCredits.CreditsMastery )
-```
+Every SQL fact lives in one place: [SQL_Playbook.md](SQL_Playbook.md) (syntax, table-occurrence names, dates, reserved words, result handling, the measured performance table, diagnostics). Read it before writing or reviewing any `ExecuteSQL`. Non-negotiables even before you open it:
 
-Same in `FROM`/`WHERE`. String literals keep single quotes (`WHERE Type <> 'Plato'` is fine — the rule is identifiers, not values). If a name isn't SQL-safe unquoted (reserved word like `Type`, `Date`, `Time`, `Timestamp`, `Value`, `Status`, `Row`, `Group`, `Order`, `User`; spaces/special chars; leading non-letter): don't paper over with `\"` quotes — stop, name it, and have the field renamed, then write it plain.
+- Identifiers plain — never `\"`-quoted; a name that is not SQL-safe gets renamed.
+- `FROM` takes the table-occurrence name (`SQLGetTableName ( field )`); emoji TO names fail.
+- SQL dates are text — wrap with the date custom functions both directions.
+- Never `IN ( … )` with a key list; never a table-wide query in a layout-object calc.
 
 ## 9a. NEVER put curly quotes `“ ”` inside a calculation
 
@@ -266,21 +268,6 @@ FileMaker treats `“`/`”` as string delimiters on paste: the calc either fail
 ```
 
 Check before shipping: `grep -c '[“”]' *.xml` must be 0. (2026-09-04: ProficiencyConversion_CreateCourse pasted with both duplicate refusals commented out.)
-
-## 9b. SQL dates ≠ FileMaker dates — convert BOTH directions
-
-ExecuteSQL returns dates as `YYYY-MM-DD` text, not a FileMaker date. Never feed a raw SQL result into a date field, `Date` calc, or date math — wrap it. Two custom functions exist; use them, don't hand-roll parsing.
-
-- SQL → FileMaker: `SQL_DateTime_to_Date ( <sql result> )`
-- FileMaker → SQL: `Date_FM_to_SQL ( <date> )` — returns `YYYY-MM-DD`
-
-✅ `SQL_DateTime_to_Date ( ExecuteSQL ( "SELECT StartOfYear FROM Settings" ; "" ; "" ) )`
-
-Bound `?` parameters coerce a FileMaker date fine. A date concatenated into the query string does not — run it through `Date_FM_to_SQL` first.
-
-## 9c. SQL `FROM` takes the TABLE OCCURRENCE name, not the base table
-
-The TO name from the relationship graph often differs from the base table in the DDR export — base `a_Settings` is queried as `FROM Settings`. Rule 0's base-table rule governs telling the user where to FIND a field; SQL is the exception. `SQLGetTableName ( field )` returns the correct TO name when unsure. (Real violation 2026-08-27: shipped `FROM a_Settings`; failed.)
 
 ## 10. Finds: stored requests CAN hold variables; build finds step-by-step
 
@@ -323,26 +310,9 @@ Diagnose with a script run through Perform Script on Server, never a local run.
 
 `MBS ( "StoreRegistration" ; Name ; Component ; Type ; ExpireMonth ; Serial )` writes the license into server prefs permanently; pair with `MBS ( "Register" ; … )` so the current session licenses immediately; `MBS ( "IsRegistered" )` = 1 confirms. All five values verbatim from the purchase email — component, type string, and `YYYYMM` expiry included — or it fails silently. Run once via PSoS from a throwaway hosted file, then remove the file. Never paste a live serial into chat/tickets without flagging it for rotation.
 
-## 15. Web-viewer data feeds — what is fast and what is slow (measured)
+## 15. HTML / JavaScript in a web viewer — read `HTML_WebViewer_Playbook.md` first
 
-Measured 2026-09-24, 147 learners, hosted file over WAN:
-
-| Pattern | Cost |
-| --- | --- |
-| Walk the found set with `Go to Record`, reading related fields | ~3.5 s |
-| `ExecuteSQL … WHERE key IN ( 147 literals )` | 3.4–4.0 s **per query** (~24 ms per literal — each value is its own server find) |
-| `ExecuteSQL` with ONE indexed predicate (`WHERE Type = ? AND Date >= ?`) | 20–60 ms |
-| Whole-table `SELECT` of a small table | ~1 ms; a few-hundred-row table ~500 ms |
-| Reading a "List of" summary field over the found set | 1–2 ms |
-
-Rules that follow:
-
-- Never `IN ( … )` with a list of keys. Never walk a found set to build a payload.
-- Found-set payload = ONE stored calc `<Feature>_Row_c` on the base table (columns joined by `Char ( 31 )`, every text column `Substitute`d to strip `Char ( 31 )`, `Char ( 30 )`, `¶`; local stored fields only so it can be stored) + ONE summary field `<Feature>_Rows_List_s` (List of `<Feature>_Row_c`). Read the summary once; `Substitute ( … ; ¶ ; Char ( 30 ) )` and ship. Its order is found-set order, so row position = record number. The row calc must never be blank (List-of skips blanks).
-- Related tables: pull small ones whole and join by key in the page; bound big ones by one indexed field, never by the found set.
-- A calc used in a SQL `WHERE` must be stored **and** indexed ("Do not store calculation results" OFF, Indexing All).
-- Loop steps: Flush **Defer**, never Always. Jump with `Go to Record [ByCalculation]` + key verify instead of walking.
-- Load scripts stamp `Get ( CurrentTimeUTCMilliseconds )` between stages and report each stage in `$$Result` — that is how the numbers above were found; do not guess where time goes.
+Any screen built with HTML/JavaScript inside a web viewer (data feeds, writes, popups, performance, debugging) follows [HTML_WebViewer_Playbook.md](HTML_WebViewer_Playbook.md). Read it before starting such work; rules 7, 7a, 7a2, 7b, 7c here are the crash-level minimums, the playbook is the method. Performance numbers for data feeds are in `SQL_Playbook.md`.
 
 ## 16. Playbooks and best-practice docs are cross-client
 

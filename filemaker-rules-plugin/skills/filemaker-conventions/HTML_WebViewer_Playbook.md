@@ -1,5 +1,5 @@
 Every web-viewer screen in every FileMaker solution loads through ONE summary read and writes through ONE guarded script — this playbook is the house pattern that makes that true.
-Status: DRAFT for review — becomes part of the filemaker-conventions skill once approved.
+Approved 2026-09-24. Read this before building or changing any HTML/JavaScript web-viewer screen. SQL specifics live in SQL_Playbook.md.
 
 # HTML / Web Viewer Playbook
 
@@ -53,6 +53,8 @@ Page side:
 - ❌ `blur` as the only save path (rule 7c). ✅ Debounced `input` + deferred blur. Never add `Commit Records` to "fix" a blank field (rule 8).
 
 ## 4. Performance
+
+Every ExecuteSQL rule and the full measured table live in `SQL_Playbook.md` — read it before writing a query. The web-viewer-specific points:
 
 Rule 15 holds the measured feed costs. The table below is one screen's rebuild, before → after, every `IN` list and the found-set walk replaced. (Future View, 2026-09-24: 147 rows, WAN: 11,020 ms → 1,410 ms.)
 
