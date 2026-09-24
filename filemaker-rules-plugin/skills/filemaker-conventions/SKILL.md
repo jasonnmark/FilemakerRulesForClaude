@@ -322,3 +322,28 @@ Diagnose with a script run through Perform Script on Server, never a local run.
 ## 14. MBS licensing — once, persisted
 
 `MBS ( "StoreRegistration" ; Name ; Component ; Type ; ExpireMonth ; Serial )` writes the license into server prefs permanently; pair with `MBS ( "Register" ; … )` so the current session licenses immediately; `MBS ( "IsRegistered" )` = 1 confirms. All five values verbatim from the purchase email — component, type string, and `YYYYMM` expiry included — or it fails silently. Run once via PSoS from a throwaway hosted file, then remove the file. Never paste a live serial into chat/tickets without flagging it for rotation.
+
+## 15. Web-viewer data feeds — what is fast and what is slow (measured)
+
+Measured 2026-09-24, 147 learners, hosted file over WAN:
+
+| Pattern | Cost |
+| --- | --- |
+| Walk the found set with `Go to Record`, reading related fields | ~3.5 s |
+| `ExecuteSQL … WHERE key IN ( 147 literals )` | 3.4–4.0 s **per query** (~24 ms per literal — each value is its own server find) |
+| `ExecuteSQL` with ONE indexed predicate (`WHERE Type = ? AND Date >= ?`) | 20–60 ms |
+| Whole-table `SELECT` of a small table | ~1 ms; a few-hundred-row table ~500 ms |
+| Reading a "List of" summary field over the found set | 1–2 ms |
+
+Rules that follow:
+
+- Never `IN ( … )` with a list of keys. Never walk a found set to build a payload.
+- Found-set payload = ONE stored calc `<Feature>_Row_c` on the base table (columns joined by `Char ( 31 )`, every text column `Substitute`d to strip `Char ( 31 )`, `Char ( 30 )`, `¶`; local stored fields only so it can be stored) + ONE summary field `<Feature>_Rows_List_s` (List of `<Feature>_Row_c`). Read the summary once; `Substitute ( … ; ¶ ; Char ( 30 ) )` and ship. Its order is found-set order, so row position = record number. The row calc must never be blank (List-of skips blanks).
+- Related tables: pull small ones whole and join by key in the page; bound big ones by one indexed field, never by the found set.
+- A calc used in a SQL `WHERE` must be stored **and** indexed ("Do not store calculation results" OFF, Indexing All).
+- Loop steps: Flush **Defer**, never Always. Jump with `Go to Record [ByCalculation]` + key verify instead of walking.
+- Load scripts stamp `Get ( CurrentTimeUTCMilliseconds )` between stages and report each stage in `$$Result` — that is how the numbers above were found; do not guess where time goes.
+
+## 16. Playbooks and best-practice docs are cross-client
+
+A best-practice doc is written for every FileMaker solution, never one. No project, layout, or feature is the subject of a rule; a project appears only as a one-line dated example under the rule it proves. Such docs live in this skill folder (`HTML_WebViewer_Playbook.md`), not in a client project. (Violation 2026-09-24: the first HTML playbook draft was written around one client's screen — "not just for fucking future view".)
