@@ -9,7 +9,10 @@ Run both steps, then report. One Bash call per command (never chain with `&&`/`;
 
 ## 1. Update the rules plugin
 - `claude plugin marketplace update jason-filemaker`
-- `claude plugin update filemaker-rules@jason-filemaker`
+- If that fails ("Failed to clone"), refresh the clone by hand, then continue:
+  - `git -C ~/.claude/plugins/marketplaces/jason-filemaker fetch origin`
+  - `git -C ~/.claude/plugins/marketplaces/jason-filemaker merge --ff-only origin/main`
+- `claude plugin update filemaker-rules@jason-filemaker` — ignore its "marketplace not refreshed" warning if the manual refresh ran. (2026-09-28: CLI refresh had failed silently for weeks.)
 - If the version changed, tell the user: **restart Claude Code to apply the new rules.** Do not force a restart mid-task — just inform.
 
 ## 2. Pull the latest schema
