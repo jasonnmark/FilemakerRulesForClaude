@@ -127,19 +127,24 @@ FileMaker IGNORES blank lines in pasted XML — a literal empty line renders NO 
 
 (Keep the blank XML line too for source readability, but the empty comment STEP is what renders in the editor.)
 
-## 4b. Comment steps: section dividers YES, essays NO — 10 words each
+## 4b. Comment steps are LABELS, not descriptions
 
-Section-divider comments between groups of steps are wanted — they make a long script scannable. What is NOT wanted is a long block inside any one of them.
+A PostToolUse hook (`scripts/fm-comment-lint.py`) flags violations in every clipboard XML file the moment it is written. Fix, don't argue.
 
-- **Cap every `# (comment)` step at ~10 words.** No rationale paragraphs, no "why this idiom", no restating values the Set Fields below already show, no install prerequisites, no cross-references to other scripts.
-- **Throwaway / run-once scripts get exactly ONE comment**: what it is and what replaces it. Nothing else.
-- Explanation belongs in the deliverable's README, or in runtime text (`$$Result`, an abort message) — never in the step list.
+- **Divider** = `=== LABEL ===`, 1–4 words, a noun. Nothing after the label: no `—`, `;`, `,`, `(`, `→`, "via", "unless", "else".
+- **Other comments** only for what the steps CANNOT show: a warning, a why, a removal date. ≤10 words, one clause. Test: delete it — does Jason lose anything the steps don't already say? No → don't write it.
+- **Never rewrite Jason's existing comments.** Pasted or whole-script rewrite: keep his text verbatim, including `⚠️` notes and sample-param comments.
+- **Sample-param comment** at the top of any JSON-param script stays and is updated with every new key (exempt from the cap).
+- Throwaway scripts: one comment. Explanation goes in chat or `$$Result`, never the step list.
 
-❌ `<Text>Anchors on LearnersImported_Utility and walks every student, creating the related record where none exists — the house idiom (same as …). Sets only the REQUIRED fields to district defaults: 120 total · ELA 20 · …</Text>`
-✅ `<Text>=== SEED TARGETS ===</Text>`
-✅ `<Text>Temporary — student import will seed these going forward.</Text>`
+The failure mode: treating 10 words as a budget to fill, and bolting a second clause onto every divider that restates the next steps.
 
-(Real violation 2026-08-13: a run-once seeder shipped with five paragraph-length preambles. "I'm never going to read them.")
+❌ `=== To / CC → JSON arrays (comma, space or return separated) ===`
+❌ `Removes learner from class list; optional email via 📧Email_JSON` (rewrote Jason's "This actually removes learner from list")
+✅ `=== RECIPIENTS ===` · `=== SCHEDULE ===` · `=== SEND ===` · `=== LOG ===`
+✅ `TEST: remove after 2026-10-05`
+
+(Violations: 2026-08-13 seeder essays; 2026-09-28 14 of 17 comments in one delivery, plus rewrote two of Jason's.)
 
 ## 4c. Calc comments: 10-word cap, never explain code
 
