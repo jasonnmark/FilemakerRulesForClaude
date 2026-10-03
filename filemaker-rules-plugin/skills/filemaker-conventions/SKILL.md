@@ -98,6 +98,8 @@ When handing back a complete script (rule 2b):
 
 Never ship a `_v2` or duplicate script that repeats an existing one's logic. Add a test mode to the original instead: a `TestTo` param that reroutes output to Jason, plus a 🪳 stub that runs it on the server. A backup path that needs duplicated logic: ask first and name the duplicated steps. (2026-10-03: shipped `🌐Attend_Export_Attendance_For_SB_v2` beside the original, "I never want you to make redundant code like that".)
 
+Replacing a working path (email transport, import, export): INSERT the new path into the existing script; the old path keeps running until Jason says to remove it. Never a whole-script rewrite that drops the old path. (2026-10-03: merge silently dropped the Gmail send Jason wanted as backup.)
+
 ## 2e. The copyable block holds ONLY the code
 
 Whatever is being copied — calc text, XML, SQL — the code block or delivered file contains nothing but the paste itself. No header notes, no "replaces the calc of…", no deploy caveats inside the block. All explanation lives in chat prose around it. (Real violation 2026-08-27: calc .txt files shipped with 3-line preambles the user had to strip before pasting.)
