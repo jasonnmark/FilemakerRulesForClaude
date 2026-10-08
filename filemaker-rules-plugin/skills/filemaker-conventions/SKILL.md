@@ -257,6 +257,21 @@ Confirmed on FM Pro 26.0.1 (beachball, 2026-08-04):
 - **Never put an ExecuteSQL JOIN in a layout-object calc.** Client-side JOINs pull every affected record to the client and go quadratic — the calc re-runs on each record switch and beachballs on data-heavy records (confirmed: Transcript⋈TranscriptAdditional in a web viewer address, FM 26.0.1). Use flat single-table indexed queries and join the rows in the page's JS. Also avoid `beforeunload` listeners in web viewer pages — they can block embedded-WebKit teardown; use `pagehide`.
 - **Never fire `PerformScript` from a `blur` handler as the only save path.** Switching records blurs the field and the call lands while FileMaker is tearing the viewer down (WebKit calls into the script engine while FM waits on WebKit → deadlock). Pattern: debounced autosave on `input` (~1s) so blur is normally clean, plus an `UNLOADING` flag set on `pagehide`/`beforeunload` that vetoes every `PerformScript`; a blur-time save defers one tick (`setTimeout 0`) so the flag can catch it.
 
+## 7d. Web viewers LOAD as an invariant shell + pushed data — never a trigger
+
+The address calc is a CONSTANT shell pulled from Settings. It references no global and no record data, so it paints the instant the layout draws; the page then asks FileMaker for its data.
+
+1. Address calc: `WebViewCleanupToShowUpInBrowsers ( ExecuteSQL ( "SELECT HTML_<View> FROM Settings" ; "" ; "" ) )`
+2. Name the web viewer object, e.g. `AdditionalServicesWV`.
+3. The HTML calls `FileMaker.PerformScript ( "<View>_GetData" ; "" )` on load and exposes `window.setData(json)`.
+4. `<View>_GetData` gathers JSON, then `Perform JavaScript in Web Viewer` (id 175) → that object name, function `setData`.
+
+- ❌ `OnLayoutEnter` triggers · ❌ `$$Data` globals · ❌ `Substitute ( html ; "{{DATA}}" ; … )`
+- Gather SQL uses `Char ( 31 )` field / `Char ( 30 )` row separators — control chars can't collide with data.
+- In use: `CourseScreenWV`, `SchedulingGridWV`, `FutureViewWV`, `ProficiencyConversionWV`.
+
+(Violated 2026-10-08: shipped a `{{DATA}}` substitution plus an OnLayoutEnter trigger, making the user run an extra step.)
+
 ## 8. Never add `Commit Records/Requests` to "fix" a save
 
 FileMaker auto-saves field writes, including in server-side scripts — a commit is never the fix for "the field came up blank." Diagnose instead: stale layout display (write actually succeeded), record lock, `GetFieldName()` returning empty, wrong/duplicate field reference, `Set Error Capture` hiding the error, wrong record or related table. (Commits were once wrongly added to import scripts, then reverted. Don't repeat.)
