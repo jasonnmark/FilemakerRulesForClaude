@@ -44,6 +44,7 @@ Every script XML, calc `.txt`, audit `.md`, or HTML mockup you hand over is a ke
 - Pattern (from `🅿️PowerSchool_Import/`): one folder per feature, emoji-prefixed to match the solution's naming, holding the script `.xml` files + related audits/calcs/mockups.
 - Name the `.xml` with the script's EXACT FileMaker name (rule 0), e.g. `DataPull 🟥🟨🟩_CurrentWeekAdditions.xml`. Reuse an existing feature folder if one fits; only create a new one when none does.
 - Still fine to draft in scratchpad, but the final artifact lands in the project folder before you report it done.
+- A scratchpad path can only be delivered as a file card; the project folder is what makes a clickable link possible. Writing there is what you owe the user, not an attachment. (Violated 2026-10-08: shipped the Additional Services HTML from scratchpad as a SendUserFile card.)
 
 ## 1d. Re-paste lists come from the changed-file set, not memory
 
