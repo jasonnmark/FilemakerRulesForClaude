@@ -267,6 +267,8 @@ The address calc is a CONSTANT shell pulled from Settings. It references no glob
 4. `<View>_GetData` gathers JSON, then `Perform JavaScript in Web Viewer` (id 175) → that object name, function `setData`.
 
 - ❌ `OnLayoutEnter` triggers · ❌ `$$Data` globals · ❌ `Substitute ( html ; "{{DATA}}" ; … )`
+- ❌ A per-view custom function for the gather. The gather is a `Set Variable $data` step inside `<View>_GetData` — a change to a view touches that script and its HTML, nothing else. Custom functions only for logic that is abstract and reused (`SQL_DateTime_to_Date`, `TrimFull`). (Violated 2026-10-08: built `WebView_AdditionalServices_Data` as a CF; user had to delete it.)
+- Checkbox/multi-line fields in a gather SQL: protect data `¶` with `Char ( 29 )` before splitting on `Char ( 30 )`/`Char ( 31 )`, restore after — otherwise an embedded ¶ shifts every column after it. (Violated 2026-10-08.)
 - Gather SQL uses `Char ( 31 )` field / `Char ( 30 )` row separators — control chars can't collide with data.
 - In use: `CourseScreenWV`, `SchedulingGridWV`, `FutureViewWV`, `ProficiencyConversionWV`.
 
