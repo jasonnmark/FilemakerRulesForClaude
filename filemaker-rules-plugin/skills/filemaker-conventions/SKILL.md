@@ -72,6 +72,8 @@ Never bracketed pseudo-syntax like `Set Field [ Table::field ; <calc> ]` — it 
 
 Anything over ~20 lines: hand back the complete updated calc/script in one paste, never "replace this block" fragments — a mis-spliced manual edit breaks the calc; re-pasting the whole thing is free. Explaining what changed in prose alongside is fine. Under ~20 lines, standalone fragments are fine.
 
+"Whole" means one copy. When the artifact is saved in the project folder and linked (rule 1c), the link IS the delivery — never paste the same content inline as well. Inline only when there is no file. (Violated 2026-10-08: linked XML files and pasted the full XML under each link, repeatedly.)
+
 ## 2c. Editing ONE existing step's calculation → bare calc text only
 
 Changing the calc inside a step that already exists is NOT "delivering a step."
