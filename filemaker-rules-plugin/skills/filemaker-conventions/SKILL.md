@@ -189,6 +189,8 @@ Copy exact step serialization from XML that is already known-good (previously pa
 
 (Verified against a real DDR export. `Else If` is 125, not 69 — 69 is plain `Else`.)
 
+Set Field on a repeating field: `<Field table="TO" id="N" repetition="2" name="Field"/>` (pasted & ran). The agentic-fm Save-As-XML converter DROPS the repetition — after any conversion, diff every Set Field against the raw `<repetition>` before shipping. (2026-10-13: converted Startup wrote `AttendanceDates_g` rep 1 four times; attendance minical headers went stale.)
+
 `Go to Record/Request/Page` is id **16**. Clipboard serialization (verified working — pasted & ran):
 ```
 <Step enable="True" id="16" name="Go to Record/Request/Page"><NoInteract state="False"/><RowPageLocation value="First"/></Step>
