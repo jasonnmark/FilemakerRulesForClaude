@@ -143,7 +143,14 @@ A PostToolUse hook (`scripts/fm-comment-lint.py`) flags violations in every clip
 - **Divider** = `=== LABEL ===`, 1–4 words, a noun. Nothing after the label: no `—`, `;`, `,`, `(`, `→`, "via", "unless", "else".
 - **Other comments** only for what the steps CANNOT show: a warning, a why, a removal date. ≤10 words, one clause. Test: delete it — does Jason lose anything the steps don't already say? No → don't write it.
 - **Never rewrite Jason's existing comments.** Pasted or whole-script rewrite: keep his text verbatim, including `⚠️` notes and sample-param comments.
-- **Sample-param comment** at the top of any JSON-param script stays and is updated with every new key (exempt from the cap). One JSON pair per line (`&#xD;` inside `<Text>`); never collapse Jason's line breaks. (2026-10-14.)
+- **Sample-param comment is MANDATORY line 1 of every script that takes JSON** — a runnable `JSONSetElement` listing EVERY key the script reads, one pair per line (`&#xD;` inside `<Text>`), exempt from the word cap; update it with every new key, never collapse Jason's line breaks. (2026-10-14.)
+  ```
+  JSONSetElement ( "" ;
+    ["SASIDs" ; "22222222" ; JSONNumber] ;
+    ["NewWindow" ; 1 ; JSONNumber] ;
+    ["Object" ; "SPED_Tab" ; JSONString]
+  )
+  ```
 - Throwaway scripts: one comment. Explanation goes in chat or `$$Result`, never the step list.
 
 The failure mode: treating 10 words as a budget to fill, and bolting a second clause onto every divider that restates the next steps.
