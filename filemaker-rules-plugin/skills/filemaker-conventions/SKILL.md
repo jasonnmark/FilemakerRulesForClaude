@@ -19,6 +19,17 @@ Field naming — respect the developer's suffix conventions; never invent prefix
 
 Always cite a field with its BASE TABLE. Fields live on base tables (Manage Database → Fields, e.g. `ImportStudent`), NOT on relationship-graph occurrences (e.g. `🧑‍🎓_⬇️Import🧑‍🎓Students`) — the occurrence name won't appear in the Fields table dropdown. Whenever sharing/referencing a field, state which base table it's on so it can be found.
 
+**New-object naming (scripts, fields, layout objects, folders, files): `Subject_Family_Action_Qualifier`.** Subject noun first so siblings sort together; family next (`Webview`, `Import`, `Cache`); verb after; secondary qualifiers last (`JSON`, `Debug`, `OnServer`, `HTML`). Reusable scripts with no subject lead with the verb. Deliverable file names = the exact object name. (Set 2026-10-15.)
+
+| ❌ | ✅ |
+| --- | --- |
+| `WebView_AdditionalServices_GetData` | `AdditionalServices_Webview_GetData` |
+| `Webview_Write_JSON` | `Write_Webview_JSON` (reusable, no subject) |
+| `HTML_AdditionalServicesList` (field) | `AdditionalServices_Webview_HTML` |
+| `AdditionalServicesWV` (object) | `AdditionalServices_Webview` |
+
+Layouts keep the existing `REPORT_` prefix until the whole group is migrated — never rename one layout out of its prefix group piecemeal.
+
 ## 0a. Every script instruction carries a LINE NUMBER — no exceptions
 
 Any time the developer must click, edit, delete, paste at, or inspect a step in a script, cite the Script Workspace line number: "double-click line 26 (`Import Records`)", never just "open the Import Records step". Applies to one-off asks in chat, not just delivery docs. DDR step numbering = workspace numbering (comments count); flag which export the numbers come from. Multiple edits in one script: list highest line first so earlier edits don't shift later anchors. (Repeated violation — called out four times on 2026-08-07. Don't repeat.)
