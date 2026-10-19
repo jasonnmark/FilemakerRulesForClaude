@@ -211,6 +211,8 @@ Copy exact step serialization from XML that is already known-good (previously pa
 
 (Verified against a real DDR export. `Else If` is 125, not 69 — 69 is plain `Else`.)
 
+Export Records to Excel: never hand-write the output file type in clipboard XML — it pastes but fails at run time ("could not be created on this disk"). Ship the step, then tell Jason to double-click it → Specify output file → pick Excel Workbooks (.xlsx). Hosted files need an absolute path: `"filemac:" & Substitute ( Get ( DocumentsPath ) ; "Documents" ; "Downloads" ) & name`. (2026-10-19.)
+
 Set Field on a repeating field: `<Field table="TO" id="N" repetition="2" name="Field"/>` (pasted & ran). The agentic-fm Save-As-XML converter DROPS the repetition — after any conversion, diff every Set Field against the raw `<repetition>` before shipping. (2026-10-13: converted Startup wrote `AttendanceDates_g` rep 1 four times; attendance minical headers went stale.)
 
 `Go to Record/Request/Page` is id **16**. Clipboard serialization (verified working — pasted & ran):
