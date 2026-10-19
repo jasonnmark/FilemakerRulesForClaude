@@ -70,6 +70,10 @@ The reply to any FileMaker delivery is a numbered list where each step says wher
 
 SendUserFile is still called (so the .txt lands in the panel) but the reply must not depend on the card. (Repeated violation across projects; Jason 2026-09-15: "That's how I always want it… you've tried to learn this before and failed.")
 
+## 1f. Throwaway test scripts are named `TEMP_TODELETE_…`
+
+Any one-run probe, verifier, or timing test the developer will discard starts with `TEMP_TODELETE_` (e.g. `TEMP_TODELETE_⏱️SpeedTest_UpdateCache_DateHoist_Verify`), so it is safe to delete when found days later. Keepers follow the solution's own naming (`⏱️SpeedTest_…`). Check the Script Workspace folder for the existing naming pattern before naming anything. (2026-10-19: probe shipped as `🩺Probe_…` with no look at the `🔥Optimizations` folder.)
+
 ## 2. Deliverables are paste-ready — never pseudo-syntax
 
 Exactly two forms:
