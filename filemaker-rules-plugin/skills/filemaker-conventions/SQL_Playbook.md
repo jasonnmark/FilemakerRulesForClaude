@@ -74,6 +74,7 @@ Rules that follow:
 - A calc in a `WHERE` must be stored AND indexed — "Do not store calculation results" OFF and Indexing All. Two different switches; the first alone still scans.
 - Never a JOIN, `GROUP BY`, aggregate, or unfiltered scan in a layout-object calc (web viewer address, conditional format, hide). Re-evaluates on every record switch, pulls the table over WAN, goes quadratic. (2026-08-28: an enrollment `GROUP BY` in an address calc froze the client, force-quit.) Read nightly-cached fields instead.
 - `LEFT OUTER JOIN` runs client-side: two flat indexed single-table queries joined in the page beat it every time.
+- Commit before any `ExecuteSQL` on a table where the current user has an open record — the open record pushes the query client-side. Watch field triggers on popups. (2026-10-21: OSS touchpoint submit slow until the SUM ran after commit.)
 - Per-record queries with `?` are fine inside a script; N of them in a loop = N round trips — pull the set once and split locally.
 - `LOWER ( col ) LIKE '%x%'` cannot use the index. Bound it first with an indexed predicate: `WHERE Flag_Active = ? AND LOWER ( Title ) LIKE ?`.
 - Instrument, never guess: `Get ( CurrentTimeUTCMilliseconds )` mark before and after each query, deltas appended to `$$Result`.
