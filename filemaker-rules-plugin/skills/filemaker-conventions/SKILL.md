@@ -187,7 +187,7 @@ First line of the file: a comment with `TEMPLATE_VERSION: vX.Y`. No revision his
 
 ## 4d. No table-wide SQL in layout-object calcs (details: `SQL_Playbook.md`)
 
-A web viewer address / conditional / hide calc re-evaluates constantly, client-side. Any ExecuteSQL in one must hit an indexed column with a selective WHERE (per-student, per-course). NEVER a GROUP BY, aggregate, or unfiltered scan over a large table (ClassList, MicroCredits, Transcript) — it downloads the whole table over WAN and beachballs or hangs the client (confirmed 2026-08-28: enrollment GROUP BY over ClassList in an address calc froze FileMaker, force-quit required). Read nightly-cached fields instead; that is what they exist for.
+A web viewer address / conditional / hide calc re-evaluates constantly, client-side. Any ExecuteSQL in one must hit an indexed column with a selective WHERE (per-student, per-course). NEVER a GROUP BY, aggregate, or unfiltered scan over a large table (ClassList, MicroCredits, Transcript) — it downloads the whole table over WAN and beachballs or hangs the client (confirmed 2026-08-28: enrollment GROUP BY over ClassList in an address calc froze FileMaker, force-quit required). Read nightly-cached fields instead; that is what they exist for. Same in scripts: never SELECT an unstored calc that walks a relationship (a related Count, a CF over related dates) across a whole table — cache it nightly and query the cache. (2026-10-22: CourseScreen_GetData selected `CreditsPossibleThisCycle_c` over all of CourseList; client hung, force-quit.)
 
 ## 4e. Scripts must not depend on layout names that can drift
 
