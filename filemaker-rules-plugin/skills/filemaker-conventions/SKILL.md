@@ -306,6 +306,10 @@ The address calc is a CONSTANT shell pulled from Settings. It references no glob
 
 FileMaker auto-saves field writes, including in server-side scripts — a commit is never the fix for "the field came up blank." Diagnose instead: stale layout display (write actually succeeded), record lock, `GetFieldName()` returning empty, wrong/duplicate field reference, `Set Error Capture` hiding the error, wrong record or related table. (Commits were once wrongly added to import scripts, then reverted. Don't repeat.)
 
+## 8b. An auto-enter calc never refreshes a cache that depends on SQL or related data
+
+Auto-enter calculations re-fire only when a field in the SAME record changes. One that reads ExecuteSQL, a related field, or an unstored `_c` built on those evaluates at record creation and then never again — so it is NOT a cache refresh. Caches are refreshed by script: the nightly loop (`🌘CacheAllCourses`-style `Set Field _cache = _c`) plus the commit/save script. Never propose "point the auto-enter at the `_c`" for those. (2026-10-29: suggested twice for `CourseList::EngagementCredits*_cache`; Jason: "you've suggested this before and it simply doesn't work.")
+
 ## 9. ExecuteSQL — read `SQL_Playbook.md` first
 
 Every SQL fact lives in one place: [SQL_Playbook.md](SQL_Playbook.md) (syntax, table-occurrence names, dates, reserved words, result handling, the measured performance table, diagnostics). Read it before writing or reviewing any `ExecuteSQL`. Non-negotiables even before you open it:
