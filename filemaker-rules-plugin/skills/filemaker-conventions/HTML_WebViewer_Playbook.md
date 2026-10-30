@@ -7,7 +7,7 @@ House rules for HTML/JS screens inside FileMaker web viewers, for every client s
 
 ## 1. Architecture (the house pattern)
 
-- Every web viewer object is named `Webview` (one name on every layout). Shared scripts: `Webview_OnLayoutEnter` (Go to Object `Webview`, attached as the layout's OnLayoutEnter trigger so the first click lands) and `Webview_Error_Email`. HTML field, GetData and Action stay per feature (`<Feature>_Webview_HTML/_GetData/_Action`). (Decided 2026-10-30.)
+- Every web viewer object is named `Webview` (one name on every layout). Shared scripts: `Webview_OnLayoutEnter` (Go to Object `Webview`, attached as the layout's OnLayoutEnter trigger so the first click lands) and `Webview_Error_Email`. Web Viewer Setup: uncheck **Display status messages** and **Display progress bar** — the status bar steals ~21 px at the bottom (found 2026-10-30: innerHeight 574 in a 595 px object). HTML field, GetData and Action stay per feature (`<Feature>_Webview_HTML/_GetData/_Action`). (Decided 2026-10-30.)
 
 | Piece | Where | Rule |
 |---|---|---|
