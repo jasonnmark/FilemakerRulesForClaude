@@ -7,6 +7,8 @@ House rules for HTML/JS screens inside FileMaker web viewers, for every client s
 
 ## 1. Architecture (the house pattern)
 
+- Every web viewer object is named `Webview` (one name on every layout). Shared scripts: `Webview_OnLayoutEnter` (Go to Object `Webview`, attached as the layout's OnLayoutEnter trigger so the first click lands) and `Email_Webview_Error`. HTML field, GetData and Action stay per feature (`<Feature>_Webview_HTML/_GetData/_Action`). (Decided 2026-10-30.)
+
 | Piece | Where | Rule |
 |---|---|---|
 | Page | `Settings::<Feature>_HTML` text field | Invariant. One paste. Starts with a `TEMPLATE_VERSION: vX.Y date` line; shows the version tag on screen. |
