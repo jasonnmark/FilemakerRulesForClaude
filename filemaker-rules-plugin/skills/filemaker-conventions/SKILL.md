@@ -215,7 +215,7 @@ Export Records to Excel: never hand-write the output file type in clipboard XML 
 
 Set Field on a repeating field: `<Field table="TO" id="N" repetition="2" name="Field"/>` (pasted & ran). The agentic-fm Save-As-XML converter DROPS the repetition — after any conversion, diff every Set Field against the raw `<repetition>` before shipping. (2026-10-13: converted Startup wrote `AttendanceDates_g` rep 1 four times; attendance minical headers went stale.)
 
-`Perform Script on Server with Callback` is id **210** (published reference andykear/FileMaker-XMLsnippet-Claude-Skill, FM 26 round-trip; parameter placement by analogy with 164 — confirm the pasted line reads back with Parameter and Callback script):
+`Perform Script on Server with Callback` is id **210** (verified working — pasted & ran 2026-10-30, FM 22; form from andykear/FileMaker-XMLsnippet-Claude-Skill):
 ```
 <Step enable="True" id="210" name="Perform Script on Server with Callback"><CallbackScriptState value="Continue"/><Calculation><![CDATA[$param]]></Calculation><Script id="1" name="ServerScript"/><CallbackScript><ScriptName id="1" name="CallbackScript"/></CallbackScript></Step>
 ```
