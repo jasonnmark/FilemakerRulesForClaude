@@ -19,7 +19,7 @@ Field naming — respect the developer's suffix conventions; never invent prefix
 
 Always cite a field with its BASE TABLE. Fields live on base tables (Manage Database → Fields, e.g. `ImportStudent`), NOT on relationship-graph occurrences (e.g. `🧑‍🎓_⬇️Import🧑‍🎓Students`) — the occurrence name won't appear in the Fields table dropdown. Whenever sharing/referencing a field, state which base table it's on so it can be found.
 
-**New-object naming (scripts, fields, layout objects, folders, files): `Subject_Family_Action_Qualifier`.** Subject noun first so siblings sort together; family next (`Webview`, `Import`, `Cache`); verb after; secondary qualifiers last (`JSON`, `Debug`, `OnServer`, `HTML`). Reusable scripts with no subject lead with the verb. Deliverable file names = the exact object name. (Set 2026-10-15.)
+**New-object naming (scripts, fields, layout objects, folders, files): `Subject_Family_Action_Qualifier`.** Subject noun first so siblings sort together; family next (`Webview`, `Import`, `Cache`); verb after; secondary qualifiers last (`JSON`, `Debug`, `OnServer`, `HTML`). Reusable scripts with no subject lead with the verb; shared plumbing for one family keeps the family first so it sorts together (`Webview_OnLayoutEnter`, `Webview_Error_Email`, not `Email_Webview_Error` — 2026-10-30). Deliverable file names = the exact object name. (Set 2026-10-15.)
 
 | ❌ | ✅ |
 | --- | --- |

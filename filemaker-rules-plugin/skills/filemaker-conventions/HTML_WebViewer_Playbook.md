@@ -7,7 +7,7 @@ House rules for HTML/JS screens inside FileMaker web viewers, for every client s
 
 ## 1. Architecture (the house pattern)
 
-- Every web viewer object is named `Webview` (one name on every layout). Shared scripts: `Webview_OnLayoutEnter` (Go to Object `Webview`, attached as the layout's OnLayoutEnter trigger so the first click lands) and `Email_Webview_Error`. HTML field, GetData and Action stay per feature (`<Feature>_Webview_HTML/_GetData/_Action`). (Decided 2026-10-30.)
+- Every web viewer object is named `Webview` (one name on every layout). Shared scripts: `Webview_OnLayoutEnter` (Go to Object `Webview`, attached as the layout's OnLayoutEnter trigger so the first click lands) and `Webview_Error_Email`. HTML field, GetData and Action stay per feature (`<Feature>_Webview_HTML/_GetData/_Action`). (Decided 2026-10-30.)
 
 | Piece | Where | Rule |
 |---|---|---|
@@ -97,7 +97,7 @@ Rules:
 | **OpenDetail** | `Go to Record [rec]` → key verify → walk fallback → dialog if not found → `Perform Script` the detail. |
 | **Client stub / server worker** | `<Feature>_onServer` stub: dialog asks, then PSoS wait-for-completion. Worker is dialog-free, sets `$$Result` before EVERY Exit. |
 | **Email sender** | `<EmailScript>` takes `{To, Subject, Body, SendNow}`; Body starting `<!DOCTYPE` passes through. |
-| **Error email** | `Email_Webview_Error` (HPS; one script for every web view). Call by name with `{feature, source:"GetData"\|"Action"\|"Page", message, param (raw script parameter), extra, courseID, lasid, lastError}` from every `fail()` and every `$ok = 0`. Page: `logErr()` on JS error / unhandled rejection / sticky red toast → `{action:"logError", message, ctx}`, max 8 per load, no repeats; FM-reported errors pass `silent` so they are not sent twice. Line 3 `$enabled` 0/1 = switch; `$$Webview_LastError` always set. |
+| **Error email** | `Webview_Error_Email` (HPS; one script for every web view). Call by name with `{feature, source:"GetData"\|"Action"\|"Page", message, param (raw script parameter), extra, courseID, lasid, lastError}` from every `fail()` and every `$ok = 0`. Page: `logErr()` on JS error / unhandled rejection / sticky red toast → `{action:"logError", message, ctx}`, max 8 per load, no repeats; FM-reported errors pass `silent` so they are not sent twice. Line 3 `$enabled` 0/1 = switch; `$$Webview_LastError` always set. |
 | **Decimal format** | `Let ( x = Round ( v ; 2 ) ; If ( Abs ( x ) < 1 and x ≠ 0 ; "0" & x ; x ) )` — leading zero on fractions. |
 
 ## 7. Delivery and paste hygiene
