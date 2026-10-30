@@ -183,7 +183,7 @@ Applies to EVERY deliverable calculation — web viewer address calcs included. 
 
 ## 4c2. Web-viewer HTML templates: version at top, no changelog
 
-First line of the file: a comment with `TEMPLATE_VERSION: vX.Y`. No revision history anywhere in the file — the repo holds it. Every other comment ≤10 words including its heading. (2026-09-15: CourseScreen shipped with a "fuckton" of rev comments.)
+Version is a VARIABLE, never a comment: page `const TPL_VER="1.3.2"`, every script line 2 `Set Variable $ver`. Bump the touched component on EVERY delivery, even a one-liner, and name the versions in the reply. Every `$$Result`, refusal, toast and banner prints all components, e.g. `HTML v1.3.2 GetData v1.5 Action v1.5 Server v1.4` (page sends `tplVer` with each call). No revision history in the file; the repo holds it. Every other comment ≤10 words. (2026-09-15: CourseScreen shipped with a "fuckton" of rev comments; 2026-10-30: three unversioned pastes of "v1.3", nobody knew what ran.)
 
 ## 4d. No table-wide SQL in layout-object calcs (details: `SQL_Playbook.md`)
 
