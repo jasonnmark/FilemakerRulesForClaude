@@ -213,6 +213,8 @@ Copy exact step serialization from XML that is already known-good (previously pa
 
 Export Records to Excel: never hand-write the output file type in clipboard XML — it pastes but fails at run time ("could not be created on this disk"). Ship the step, then tell Jason to double-click it → Specify output file → pick Excel Workbooks (.xlsx). Hosted files need an absolute path: `"filemac:" & Substitute ( Get ( DocumentsPath ) ; "Documents" ; "Downloads" ) & name`. (2026-10-19.)
 
+**Script references are by id, never by calculated name.** `Perform Script` / `Perform Script on Server` / callback slots use `<Script id="N" name="Exact Name"/>` with the real id from the schema export; never the `<Calculated><Calculation>"name"</Calculation></Calculated>` form — a calculated name breaks the moment the script is renamed, an id reference follows the rename. Script not in the export yet (created this delivery): `id="1"` placeholder + exact name, pasted AFTER the target script exists; FileMaker resolves it by name on paste and stores the id. (2026-11-02: Jason hand-fixed every by-name call: "if I change names things randomly change".)
+
 Set Field on a repeating field: `<Field table="TO" id="N" repetition="2" name="Field"/>` (pasted & ran). The agentic-fm Save-As-XML converter DROPS the repetition — after any conversion, diff every Set Field against the raw `<repetition>` before shipping. (2026-10-13: converted Startup wrote `AttendanceDates_g` rep 1 four times; attendance minical headers went stale.)
 
 `Perform Script on Server with Callback` is id **210** (verified working — pasted & ran 2026-10-30, FM 22; form from andykear/FileMaker-XMLsnippet-Claude-Skill):
