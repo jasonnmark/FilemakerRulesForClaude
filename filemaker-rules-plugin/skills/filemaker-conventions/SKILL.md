@@ -48,11 +48,11 @@ Each project keeps a `Spec_notes.md` at its project root — confirmed, hard-won
 
 NEVER put it (or any durable note) inside the `Schema/` folder — `Schema/` is re-exported and replaced wholesale, wiping anything in it. Root is stable; `Schema/` is disposable. (Learned the hard way: a note had wrongly been placed in `Schema/`.)
 
-## 1c. Save deliverable files in a per-feature subfolder at project ROOT — never scratchpad/tmp
+## 1c. Save deliverable files in `<project>/ClaudeWorking/<Feature>/` — never the project root, never scratchpad/tmp
 
-Every script XML, calc `.txt`, audit `.md`, or HTML mockup you hand over is a keeper committed to git — save it into a **feature subfolder at the project root**, not the session scratchpad or `/tmp`. (Learned the hard way: a DataPull snippet was wrongly left in scratchpad.)
+Every script XML, calc `.txt`, README, audit `.md`, or HTML mockup you hand over is a keeper committed to git — save it into **`<project>/ClaudeWorking/<Feature>/`**, never the project root (that is Jason's: schema exports, databases, assets), never the session scratchpad or `/tmp`. (2026-11-03: Jason moved every feature folder out of the HPS root into `ClaudeWorking/` — "make this a rule for working in my folders". Earlier: a DataPull snippet was wrongly left in scratchpad.)
 
-- Pattern (from `🅿️PowerSchool_Import/`): one folder per feature, emoji-prefixed to match the solution's naming, holding the script `.xml` files + related audits/calcs/mockups.
+- Pattern (from `ClaudeWorking/🅿️PowerSchool_Import/`): one folder per feature, emoji-prefixed to match the solution's naming, holding the script `.xml` files + related audits/calcs/mockups/README.
 - Name the `.xml` with the script's EXACT FileMaker name (rule 0), e.g. `DataPull 🟥🟨🟩_CurrentWeekAdditions.xml`. Reuse an existing feature folder if one fits; only create a new one when none does.
 - Still fine to draft in scratchpad, but the final artifact lands in the project folder before you report it done.
 - A scratchpad path can only be delivered as a file card; the project folder is what makes a clickable link possible. Writing there is what you owe the user, not an attachment. (Violated 2026-10-08: shipped the Additional Services HTML from scratchpad as a SendUserFile card.)
