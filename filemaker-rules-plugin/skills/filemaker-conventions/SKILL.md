@@ -232,7 +232,7 @@ Callback slot is `<ScriptName>` inside `<CallbackScript>`, not `<Script>`. `id="
 
 ## 6. Output via a `$$global`, never a dialog
 
-Probe/debug/diagnostic scripts: add `Set Variable [ $$Result ]` immediately before `Exit Script`, using the same expression Exit Script returns, so it can be grabbed in the Data Viewer. Dialog text can't be selected/copied — a dialog is optional extra, never the sole output. Scripts that might run on server: return via Exit Script result AND `$$Result` AND a dialog.
+Probe/debug/diagnostic scripts: add `Set Variable [ $$Result ]` immediately before `Exit Script`, using the same expression Exit Script returns, so it can be grabbed in the Data Viewer. TEMP_TODELETE probes and timing tests get NO Show Custom Dialog — Jason reads the `$$` global only (2026-11-03: "don't include the show dialog, I don't do anything with that data"). Scripts that might run on server: return via Exit Script result AND `$$Result` AND a dialog.
 
 ```xml
 <Step enable="True" id="141" name="Set Variable">
