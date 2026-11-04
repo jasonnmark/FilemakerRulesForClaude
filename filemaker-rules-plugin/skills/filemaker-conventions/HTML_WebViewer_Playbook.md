@@ -36,11 +36,11 @@ House rules for HTML/JS screens inside FileMaker web viewers, for every client s
 Write script skeleton, in order:
 
 1. `Freeze Window` + `Set Error Capture` (rule 7c).
-2. Parse param; guard every field (`$$Result` error + Exit on a bad one).
+2. Parse param; guard what the page can't know: record exists, unchanged since load, permission (`$$Result` error + Exit on a bad one).
 3. `New Window` at 5000/5000 on a blank `<UtilityLayout>` of the target table. Name it `"<Feature>_Work " & Get(UUID)`; verify `Get(LayoutTableName)` before touching anything. (2026-09-04: a leftover work window with a reused name fooled the guard.)
 4. Find by `<KeyField>`, step-by-step (rule 10). Found ≠ 1 → refuse with a forensic probe (`pk exists under another <KeyField>` vs `pk not in table`).
 5. `Set Field By Name`; commit; re-read.
-6. Report `{op, key, field, value, ok, error}` via `receiveReport`; refusal → also a blocking FileMaker dialog. `Close Window` before the report.
+6. Report `{op, key, field, value, ok, error}` via `receiveReport`; refusal → sticky red toast, no FileMaker dialog. `Close Window` before the report.
 
 Page side:
 
@@ -48,8 +48,8 @@ Page side:
 |---|---|
 | Mark the row `.busy`; unlock after 12 s with a red "nothing is confirmed saved" toast | A silent hang looked like success |
 | One write at a time. Forms need no queue: the form holds its values and rechecks after the report. Queue or batch only where many quick clicks are realistic (attendance grids, toggles); there, a late report must not release the next write | Rapid clicks stacked PerformScript (2026-09-15); a form queue lost data (2026-11-03) |
-| Navigation / refresh / row clicks wait while saving | Record switch mid-write hung the client |
-| Toasts show verified re-read values, never intent | "Saved" lied when the write was refused |
+| FileMaker navigation and refresh wait while saving; clicks that stay on the page don't | Record switch mid-write hung the client |
+| Say saved only after the script reports success; refresh the row from the re-read, no sent-vs-saved compare | "Saved" lied when the write was refused |
 | Red toasts are sticky; refusals never auto-refresh | Auto-refresh re-blanked the list (2026-09-04) |
 
 - ❌ `blur` as the only save path (rule 7c). ✅ Debounced `input` + deferred blur. Never add `Commit Records` to "fix" a blank field (rule 8).
