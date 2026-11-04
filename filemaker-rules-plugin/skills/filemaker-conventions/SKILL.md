@@ -318,6 +318,14 @@ FileMaker auto-saves field writes, including in server-side scripts — a commit
 
 Auto-enter calculations re-fire only when a field in the SAME record changes. One that reads ExecuteSQL, a related field, or an unstored `_c` built on those evaluates at record creation and then never again — so it is NOT a cache refresh. Caches are refreshed by script: the nightly loop (`🌘CacheAllCourses`-style `Set Field _cache = _c`) plus the commit/save script. Never propose "point the auto-enter at the `_c`" for those. (2026-10-29: suggested twice for `CourseList::EngagementCredits*_cache`; Jason: "you've suggested this before and it simply doesn't work.")
 
+## 8c. A custom function edit never updates stored calcs
+
+Every custom function edit ships, in the same delivery, with a rebuild of each stored calc that uses it (find them in the schema export). Prove staleness with a two-line Data Viewer watch: function output vs stored field.
+
+Rebuild: check **Do not store calculation results** → close Manage Database → reopen → uncheck, Indexing **All** → close. Closing between is required.
+
+❌ Spacing-only calc edit: did not rebuild. ❌ Marker comment in the calc: leaves junk. (2026-11-03: scheduling grid keys stayed stale until the toggle.)
+
 ## 9. ExecuteSQL — read `SQL_Playbook.md` first
 
 Every SQL fact lives in one place: [SQL_Playbook.md](SQL_Playbook.md) (syntax, table-occurrence names, dates, reserved words, result handling, the measured performance table, diagnostics). Read it before writing or reviewing any `ExecuteSQL`. Non-negotiables even before you open it:
