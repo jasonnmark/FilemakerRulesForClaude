@@ -47,7 +47,7 @@ Page side:
 | Rule | Why |
 |---|---|
 | Mark the row `.busy`; unlock after 12 s with a red "nothing is confirmed saved" toast | A silent hang looked like success |
-| ONE write at a time (queue); a late report must not release the next write | Rapid clicks stacked PerformScript (2026-09-15) |
+| One write at a time. Forms need no queue: the form holds its values and rechecks after the report. Queue or batch only where many quick clicks are realistic (attendance grids, toggles); there, a late report must not release the next write | Rapid clicks stacked PerformScript (2026-09-15); a form queue lost data (2026-11-03) |
 | Navigation / refresh / row clicks wait while saving | Record switch mid-write hung the client |
 | Toasts show verified re-read values, never intent | "Saved" lied when the write was refused |
 | Red toasts are sticky; refusals never auto-refresh | Auto-refresh re-blanked the list (2026-09-04) |
