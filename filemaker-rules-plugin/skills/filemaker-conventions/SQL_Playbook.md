@@ -107,4 +107,4 @@ Rules that follow:
 7. No `IN ( … )` key list; no found-set walk; no loop of per-record queries.
 8. Every `WHERE` column indexed; a calc there is stored AND indexed; `LIKE` bounded by an indexed predicate.
 9. Not in a layout-object calc; no JOIN / `GROUP BY` / aggregate outside a script.
-10. Timed with `Get ( CurrentTimeUTCMilliseconds )` marks in `$$Result`, and the number reported.
+10. Timed when it feeds a load or a loop: `Get ( CurrentTimeUTCMilliseconds )` marks in `$$Result`, and the number reported.
