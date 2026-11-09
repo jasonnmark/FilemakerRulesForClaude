@@ -377,6 +377,13 @@ Enable at Admin Console → **Connectors → Plug-ins**: "FileMaker Script Engin
 
 Pasted shell blocks for the server: omit the `#!/bin/bash` shebang — zsh history expansion errors on `!` (`event not found`). Quoted paths need no backslash escaping.
 
+## 12b. Never guard one half of an open/close pair
+
+Server sessions (PSoS, schedules) run OnFirstWindowOpen AND OnLastWindowClose. Before adding a server guard to the open script, read the close script: if open creates a session record and close deletes "the current record", both run on server or neither changes.
+
+- ❌ Wrapped `Startup`'s `New Record` in `If ( not Server )`; `EndScript` still deleted the current Home record → every PSoS session deleted another user's Globals record. (Map Academy, 2026-11-09: "don't do that again".)
+- ✅ Leave open/close scripts untouched unless the delivery changes both sides together; check `Get ( FoundCount )` alone is no ownership test.
+
 ## 13. Server-side plugin diagnostics — in order, via PSoS
 
 Diagnose with a script run through Perform Script on Server, never a local run.
