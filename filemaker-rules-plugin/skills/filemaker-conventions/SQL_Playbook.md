@@ -25,7 +25,7 @@ Cross-client. Replaces the SQL parts of skill rules 4d, 7c, 9, 9b, 9c, 15 and HT
 
 Reserved words (Claris list: <https://help.claris.com/en/sql-reference/content/reserved-words.html>): `Type`, `Date`, `Time`, `Timestamp`, `Value`, `Status`, `Row`, `Group`, `Order`, `User`, `Work`, `Level` are reserved. `Resume`, `Age`, `Notes` are not. Check the list before naming a field; alias when the column already exists.
 
-Supported and used in the house: `LOWER()`, `LIKE '%x%'`, `IN`, `GROUP BY`, `COUNT(*)`, `MIN`/`MAX`, `ORDER BY`, `FETCH FIRST n ROWS ONLY`, `ROWID` (record id — documented for SELECT/WHERE; `ORDER BY ROWID` works in practice), `LEFT OUTER JOIN` (works, client-side, slow — §3).
+Supported and used in the house: `LOWER()`, `LIKE '%x%'`, `IN`, `COUNT(*)`/`MIN`/`MAX` (only inside a selective indexed `WHERE`), `ORDER BY`, `FETCH FIRST n ROWS ONLY`, `ROWID` (record id — documented for SELECT/WHERE; `ORDER BY ROWID` works in practice), `LEFT OUTER JOIN` (works, client-side, slow — §3).
 
 ## 2. Results
 
@@ -106,5 +106,5 @@ Rules that follow:
 6. `Left ( $r ; 1 ) = "?"` guard after every query, first 40 chars into `$$Result`; blank treated as zero rows.
 7. No `IN ( … )` key list; no found-set walk; no loop of per-record queries.
 8. Every `WHERE` column indexed; a calc there is stored AND indexed; `LIKE` bounded by an indexed predicate.
-9. Not in a layout-object calc; no JOIN / `GROUP BY` / aggregate outside a script.
+9. No `GROUP BY` anywhere, ever (SKILL.md §4d). Not in a layout-object calc; no JOIN or table-wide aggregate.
 10. Timed when it feeds a load or a loop: `Get ( CurrentTimeUTCMilliseconds )` marks in `$$Result`, and the number reported.
