@@ -239,7 +239,7 @@ Every probe, diagnostic, report or fix script puts its result in `$$Result` — 
 - Clipboard: Set Field the solution's utility global text field = `$$Result` → `Copy` [Select] that field (Go to a layout that has it, then back to the original layout). The field is recorded in the project's `Spec_notes.md`; none recorded → ask once and record it. (HPS: `Global::temp_holderField_g` on layout `LoadingScreen`.)
 - Read-only TEMP_TODELETE probes and timing tests: no dialog (2026-11-03). Scripts that write or run on server: one short dialog ending "Full report is on your clipboard".
 - Data-fix scripts are ONE run: audit before → guards → write in one transaction → audit after → PASS/FAIL checks → report. No Dry run / Apply choice; failed guards are the dry run and write nothing. (2026-11-10: "I shouldn't have to run this shit twice".)
-- Field validation "Only during data entry" still fires on `Set Field` (error 507, transaction reverted). To change a field whose validation refuses the current row state, clear the condition, write, move to another record, then restore it in a second pass in the same transaction.
+- Field validation "Only during data entry" still fires on `Set Field` (error 507, transaction reverted). Validation is checked at Commit Transaction against every field changed in that transaction, so changing a field and its validation's condition in ONE transaction always fails, whatever the pass order. Use two transactions: clear the condition + write the field, commit; then restore the condition, commit.
 
 (2026-11-10: "that should be a FILEMAKER rule for all projects".)
 
