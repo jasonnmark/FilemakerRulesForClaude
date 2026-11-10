@@ -258,18 +258,6 @@ Show Custom Dialog input fields target a `$variable` set to the default just bef
 
 (2026-11-10: "it's a pretty common UI pattern".)
 
-## 6a2. Load the next paste onto Jason's clipboard yourself
-
-When his next step is one paste, put it on the clipboard and say "it's on your clipboard"; the linked file stays the record. One clipboard: load the step he does first, the next one when he reports back.
-
-| Paste | Command |
-|---|---|
-| Calc, Data Viewer, SQL text | `pbcopy < "<file>"` |
-| Script steps | `osascript -e 'set the clipboard to (read (POSIX file "<file>") as «class XMSS»)' -e 'clipboard info'` — must report `«class XMSS»`; then ⌘V in Script Workspace |
-| Whole script / field / custom function / layout objects | same, with `XMSC` / `XMFD` / `XMFN` / `XML2` (rule 11) |
-
-(2026-11-10: "don't you have a rule to always put things like this right in my clipboard?")
-
 ## 6b. Data Viewer diagnostics = ONE calc, labeled, copy-back-able
 
 When asking Jason to check values, give a single `List ( "label: " & expr ; … )` calc he pastes once and copies the result back. Never a numbered list of separate expressions. (2026-09-11: "give me ONE chunk of code".)
@@ -384,7 +372,7 @@ Preference: never deliver a find as a single stored-request `Perform Find [Resto
 
 FileMaker never reads plain text from the clipboard for schema objects; the entry must carry a 4-char type code: `XMSS` script steps, `XMSC` whole script, `XMTB` table, `XMFD` field, `XMFN` custom function, `XML2` layout objects. Plugins don't hook Cmd-V — write the tagged clipboard explicitly.
 
-- Paste IN: Claude loads the clipboard with `osascript` (rule 6a2), then Cmd-V into the step list. Fallback: evaluate `BE_ClipboardSetText ( $xml ; "XMSS" )` in the Data Viewer.
+- Paste IN: evaluate `BE_ClipboardSetText ( $xml ; "XMSS" )` in the Data Viewer, then Cmd-V into the step list. Claude cannot load Jason's clipboard (2026-11-10).
 - Copy OUT: copy steps in Script Workspace, then `BE_ClipboardGetText ( "XMSS" )`. Empty → evaluate `BE_ClipboardFormats` and use the exact string it reports.
 - The Data Viewer truncates long results — a big script looks cut off even when the copy worked. Write to disk with `BE_FileWriteText` before judging.
 - Long XML in a calc: park it in a global field rather than inline-escaping every `\"`.
