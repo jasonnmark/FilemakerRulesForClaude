@@ -244,6 +244,15 @@ Probe/debug/diagnostic scripts: add `Set Variable [ $$Result ]` immediately befo
 </Step>
 ```
 
+## 6a. Dialog input = `$variable` pre-set to the default
+
+Show Custom Dialog input fields target a `$variable` set to the default just before the step; the box opens showing it. Validate after (out of range → default). Never a new field to hold or remember the answer; never a blank box with "blank = default".
+
+- ❌ `Staff::VoiceToText_StyleNotes_Count` field · ❌ label "Touchpoints to read (blank = 100)"
+- ✅ `Set Variable $countIn = 100` → dialog input `$countIn` → `$count = If ( 10 ≤ n ≤ 500 ; n ; 100 )`
+
+(2026-11-10: "it's a pretty common UI pattern".)
+
 ## 6b. Data Viewer diagnostics = ONE calc, labeled, copy-back-able
 
 When asking Jason to check values, give a single `List ( "label: " & expr ; … )` calc he pastes once and copies the result back. Never a numbered list of separate expressions. (2026-09-11: "give me ONE chunk of code".)
