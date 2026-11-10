@@ -232,9 +232,14 @@ Callback slot is `<ScriptName>` inside `<CallbackScript>`, not `<Script>`. `id="
 ```
 `value` = First | Next | Previous | Last; `<Exit state="True"/>` = "exit after last".
 
-## 6. Output via a `$$global`, never a dialog
+## 6. Results: `$$Result`, then the clipboard
 
-Probe/debug/diagnostic scripts: add `Set Variable [ $$Result ]` immediately before `Exit Script`, using the same expression Exit Script returns, so it can be grabbed in the Data Viewer. TEMP_TODELETE probes and timing tests get NO Show Custom Dialog — Jason reads the `$$` global only (2026-11-03: "don't include the show dialog, I don't do anything with that data"). Scripts that might run on server: return via Exit Script result AND `$$Result` AND a dialog.
+Every probe, diagnostic, report or fix script puts its result in `$$Result` — that exact name, never a per-script `$$Audit_JSON` / `$$FixReport` — immediately before `Exit Script`, then copies it to the clipboard so Jason pastes it straight back to Claude.
+
+- Clipboard: Set Field the solution's utility global text field = `$$Result` → `Copy` [Select] that field (Go to a layout that has it, then back to the original layout). The field is recorded in the project's `Spec_notes.md`; none recorded → ask once and record it. (HPS: `Global::temp_holderField_g` on layout `LoadingScreen`.)
+- Read-only TEMP_TODELETE probes and timing tests: no dialog (2026-11-03). Scripts that write or run on server: one short dialog ending "Full report is on your clipboard".
+
+(2026-11-10: "that should be a FILEMAKER rule for all projects".)
 
 ```xml
 <Step enable="True" id="141" name="Set Variable">
@@ -252,6 +257,18 @@ Show Custom Dialog input fields target a `$variable` set to the default just bef
 - ✅ `Set Variable $countIn = 100` → dialog input `$countIn` → `$count = If ( 10 ≤ n ≤ 500 ; n ; 100 )`
 
 (2026-11-10: "it's a pretty common UI pattern".)
+
+## 6a2. Load the next paste onto Jason's clipboard yourself
+
+When his next step is one paste, put it on the clipboard and say "it's on your clipboard"; the linked file stays the record. One clipboard: load the step he does first, the next one when he reports back.
+
+| Paste | Command |
+|---|---|
+| Calc, Data Viewer, SQL text | `pbcopy < "<file>"` |
+| Script steps | `osascript -e 'set the clipboard to (read (POSIX file "<file>") as «class XMSS»)' -e 'clipboard info'` — must report `«class XMSS»`; then ⌘V in Script Workspace |
+| Whole script / field / custom function / layout objects | same, with `XMSC` / `XMFD` / `XMFN` / `XML2` (rule 11) |
+
+(2026-11-10: "don't you have a rule to always put things like this right in my clipboard?")
 
 ## 6b. Data Viewer diagnostics = ONE calc, labeled, copy-back-able
 
@@ -367,7 +384,7 @@ Preference: never deliver a find as a single stored-request `Perform Find [Resto
 
 FileMaker never reads plain text from the clipboard for schema objects; the entry must carry a 4-char type code: `XMSS` script steps, `XMSC` whole script, `XMTB` table, `XMFD` field, `XMFN` custom function, `XML2` layout objects. Plugins don't hook Cmd-V — write the tagged clipboard explicitly.
 
-- Paste IN: evaluate `BE_ClipboardSetText ( $xml ; "XMSS" )` in the Data Viewer, then Cmd-V into the step list.
+- Paste IN: Claude loads the clipboard with `osascript` (rule 6a2), then Cmd-V into the step list. Fallback: evaluate `BE_ClipboardSetText ( $xml ; "XMSS" )` in the Data Viewer.
 - Copy OUT: copy steps in Script Workspace, then `BE_ClipboardGetText ( "XMSS" )`. Empty → evaluate `BE_ClipboardFormats` and use the exact string it reports.
 - The Data Viewer truncates long results — a big script looks cut off even when the copy worked. Write to disk with `BE_FileWriteText` before judging.
 - Long XML in a calc: park it in a global field rather than inline-escaping every `\"`.
