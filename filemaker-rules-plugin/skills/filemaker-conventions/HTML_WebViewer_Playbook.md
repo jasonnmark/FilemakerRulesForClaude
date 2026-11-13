@@ -106,6 +106,7 @@ Rules:
 - `grep -c '[“”]' *.xml` = 0 (rule 9a). No `[` in calc comments (rule 7b). Comments ≤ 10 words (rule 4b).
 - pv bump = re-paste GetData AND template from the same delivery; README lists which files changed per rev, paste order, exact script names.
 - `<Feature>_PREVIEW.html` (template + FileMaker stub + mock data) sits beside the template for browser tests; never pasted.
+- Template's first line is `<!DOCTYPE html>`. Without it FileMaker renders in quirks mode: class selectors ignore case, page frame/gaps/scrollbars appear that PREVIEW never shows. Test the pasted `.txt` (doctype included), not the PREVIEW wrapper. (2026-11-13: `#app.LC` picked up `.lc` padding.)
 
 ## 8. Debugging (for Claude)
 
@@ -120,7 +121,7 @@ Rules:
 
 ## Checklist before shipping a web-viewer screen
 
-1. `TEMPLATE_VERSION` line + on-screen tag updated.
+1. `TEMPLATE_VERSION` line + on-screen tag updated; `.txt` starts with `<!DOCTYPE html>`.
 2. Address calc depends on nothing from the current record; no SQL JOIN/aggregate.
 3. `pv` / `EXPECTED_PV` / `EXPECTED_COLS` match GetData; banner text names the files.
 4. Rows via `<Feature>_Row_c` + `<Feature>_Rows_List_s` summary; no `IN (…)`, no found-set walk; every `WHERE` calc stored + indexed.
