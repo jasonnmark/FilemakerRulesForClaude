@@ -19,6 +19,7 @@ House rules for HTML/JS screens inside FileMaker web viewers, for every client s
 
 - ❌ Address calc reads a field on the layout's record → reloads on every record switch and every Set Field (rule 7c). (Gradpath, 2026-08-04: beachball on every click.)
 - ✅ Address calc reads only `ExecuteSQL ( "SELECT <Feature>_HTML FROM Settings" )` + globals.
+- ❌ A page callback that moves the viewer's window to another record (Go to Record) — FileMaker reloads the viewer even when the address calc reads no record field; page state is lost. Do record moves in a hidden window, or on leaving the layout. (Data_Webview, 2026-11-24: white-screen reload on every row click.)
 - `pagehide` (never `beforeunload`) sets `UNLOADING`, which vetoes every PerformScript (rule 7c).
 - One GetData request in flight; never re-fire on a timer — stacked PerformScript calls deadlock FileMaker. Retry from a button only, after 60 s. (2026-09-15: force-quit.)
 
