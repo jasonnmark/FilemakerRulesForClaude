@@ -109,6 +109,20 @@ Rules:
 - `<Feature>_PREVIEW.html` (template + FileMaker stub + mock data) sits beside the template for browser tests; never pasted.
 - Template's first line is `<!DOCTYPE html>`. Without it FileMaker renders in quirks mode: class selectors ignore case, page frame/gaps/scrollbars appear that PREVIEW never shows. Test the pasted `.txt` (doctype included), not the PREVIEW wrapper. (2026-11-13: `#app.LC` picked up `.lc` padding.)
 
+## 7b. WebDirect (browser) web viewers
+
+Any layout a browser user sees (student/guest views) breaks the FileMaker Pro patterns. (2026-11-27: HPS mobile course catalog, four rounds.)
+
+| Pro pattern | WebDirect result | Use instead |
+| --- | --- | --- |
+| Shell + `FileMaker.PerformScript` loader | E755, `window.FileMaker` never appears | HTML in a `$$` var set by the sign-in script; calc substitutes it |
+| Raw `"data:text/html;charset=utf-8," & html` | Blank: first `#` (CSS colors) ends the URL; returns dropped | `"data:text/html;charset=utf-8;base64," & Base64EncodeRFC ( 4648 ; html )` |
+| Privilege set runs any script | Guest/student sets allow only listed scripts | Name every script the browser path runs; Jason adds it, then a fresh sign-in |
+
+- One calc serves both: `If ( IsEmpty ( $$var ) ; <Pro shell> ; <Base64 page> )`.
+- Security changes apply at the next sign-in; tell Jason to close the tab and sign in again.
+- Blank viewer diagnostic: show `Length` of html/data/tokens plus `Left ( html ; 40 )` HTML-escaped in a `<pre>`.
+
 ## 8. Debugging (for Claude)
 
 - `$$Result` = `OK | Script | detail` or `ERROR | Script | where | why`; load scripts append per-stage ms from `Get(CurrentTimeUTCMilliseconds)` marks.
